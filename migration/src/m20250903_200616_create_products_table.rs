@@ -10,6 +10,8 @@ enum Product {
     Name,
     #[sea_orm(iden = "description")]
     Description,
+    Price,
+    Sku,
 }
 
 #[async_trait::async_trait]
@@ -24,6 +26,13 @@ impl MigrationTrait for Migration {
                     .col(pk_auto(Product::Id))
                     .col(ColumnDef::new(Product::Name).string().not_null())
                     .col(ColumnDef::new(Product::Description).string().null())
+                    .col(ColumnDef::new(Product::Price).decimal().not_null())
+                    .col(
+                        ColumnDef::new(Product::Sku)
+                            .string()
+                            .unique_key()
+                            .not_null(),
+                    )
                     .to_owned(),
             )
             .await

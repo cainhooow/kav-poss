@@ -9,6 +9,9 @@ pub struct Model {
     pub id: i32,
     pub name: String,
     pub description: Option<String>,
+    pub price: Decimal,
+    #[sea_orm(unique)]
+    pub sku: String,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

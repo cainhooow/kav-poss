@@ -19,8 +19,8 @@ impl<R: ProductRepository> CreateProductUseCase<R> {
         Self { repository: repo }
     }
 
-    pub async fn execute(&self, name: String) -> AppResult<Product> {
-        let product = ProductBuilder::new(name).build();
+    pub async fn execute(&self, name: String, description: Option<String>) -> AppResult<Product> {
+        let product = ProductBuilder::new(name).description(description).build();
         let created_product = self.repository.save(&product).await?;
         Ok(created_product)
     }

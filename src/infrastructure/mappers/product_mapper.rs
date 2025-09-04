@@ -1,3 +1,5 @@
+use rust_decimal::prelude::ToPrimitive;
+
 use crate::{
     domain::entities::product::product::Product,
     infrastructure::entities::product::Model as ProductModel,
@@ -9,6 +11,8 @@ impl From<ProductModel> for Product {
             id: Some(value.id),
             name: value.name,
             description: value.description,
+            price: value.price.to_f64().unwrap(),
+            sku: value.sku,
         }
     }
 }
