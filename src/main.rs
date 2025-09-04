@@ -1,36 +1,12 @@
-mod routers;
-
-use std::sync::Arc;
-
-use crate::{
-    infrastructure::{database::estabilish_connection, interfaces::http::catcher::global_catcher},
-    routers::routers,
-};
-use salvo::{catcher::Catcher, prelude::*};
-use sea_orm::DatabaseConnection;
+use crate::infrastructure::http::http_server_init;
 
 mod application;
 mod domain;
 mod infrastructure;
 
-#[derive(Default, Clone, Debug)]
-pub struct State {
-    db: Arc<DatabaseConnection>,
-}
 
 #[tokio::main]
 async fn main() {
-    tracing_subscriber::fmt().init();
-    let acceptor = TcpListener::new("0.0.0.0:5050").bind().await;
     _ = dotenvy::dotenv();
-
-    let connection = estabilish_connection().await;
-    let router = Router::with_path("api")
-        .hoop(affix_state::inject(Arc::new(State {
-            db: Arc::new(connection),
-        })))
-        .push(routers());
-
-    let router_service = Service::new(router).catcher(Catcher::default().hoop(global_catcher));
-    Server::new(acceptor).serve(router_service).await;
+    http_server_init().await;
 }

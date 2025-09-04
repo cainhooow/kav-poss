@@ -2,13 +2,13 @@ use salvo::prelude::*;
 use std::sync::Arc;
 
 use crate::{
-    State,
     application::{
         commands::product_handler::CreateProductUseCase,
         exceptions::AppResult,
         queries::product_query::{FindAllProductsQuery, FindProductByIdQuery},
     },
     infrastructure::{
+        http::State,
         interfaces::http::resources::{DataResponse, product_resource::ProductResource},
         persistence::sea_orm_product_repository::SeaOrmProductRepository,
     },
