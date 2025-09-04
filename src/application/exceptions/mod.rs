@@ -1,9 +1,6 @@
-use salvo::{writing::Text, Depot, Request, Response, Writer};
+use std::num::{IntErrorKind, ParseIntError};
 use thiserror::Error;
-
-use crate::{
-    domain::exceptions::RepositoryError,
-};
+use crate::domain::exceptions::RepositoryError;
 
 #[derive(Debug, Error)]
 pub enum AppError {
@@ -28,10 +25,14 @@ impl From<RepositoryError> for AppError {
     }
 }
 
-// #[async_trait::async_trait]
-// impl Writer for AppError {
-//     async fn write(mut self, _req: &mut Request, depot: &mut Depot, res: &mut Response) {
-//         println!("{:?} {:?} {:?}", depot, _req, res);
-//         res.render(Text::Plain("I'm a error, hahaha!"));
-//     }
-// }
+impl From<ParseIntError> for AppError {
+    fn from(value: ParseIntError) -> Self {
+        let error_kind = value.kind();
+        match error_kind {
+            IntErrorKind::InvalidDigit => {
+                AppError::Unexpected(format!("Provided value is invalid int(i32, i64)"))
+            }
+            _ => AppError::Unexpected(format!("ParseInt error")),
+        }
+    }
+}

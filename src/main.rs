@@ -2,7 +2,10 @@ mod routers;
 
 use std::sync::Arc;
 
-use crate::{infrastructure::database::estabilish_connection, routers::routers};
+use crate::{
+    infrastructure::{database::estabilish_connection, interfaces::http::catcher::global_catcher},
+    routers::routers,
+};
 use salvo::{catcher::Catcher, prelude::*};
 use sea_orm::DatabaseConnection;
 
@@ -28,6 +31,6 @@ async fn main() {
         })))
         .push(routers());
 
-    let router_service = Service::new(router).catcher(Catcher::default());
+    let router_service = Service::new(router).catcher(Catcher::default().hoop(global_catcher));
     Server::new(acceptor).serve(router_service).await;
 }

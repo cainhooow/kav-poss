@@ -6,6 +6,7 @@ use crate::{
     application::{
         commands::product_handler::CreateProductUseCase,
         exceptions::{AppError, AppResult},
+        queries::product_query::{FindAllProductsQuery, FindProductByIdQuery},
     },
     domain::entities::product::product::Product,
     infrastructure::{
@@ -46,31 +47,43 @@ async fn create(depot: &mut Depot, req: &mut Request, res: &mut Response)
 }
 
 #[handler]
-async fn index(
-    depot: &mut Depot,
-    res: &mut Response,
-) -> Result<Json<DataResponse<ProductResource>>, String> {
-    Ok(Json(DataResponse::success(ProductResource {
-        id: Some(1),
-        name: "xxx".to_string(),
-        description: None,
-        price: 29.99,
-        sku: "XXX-XXX.XX".to_string(),
-    })))
+async fn index(depot: &mut Depot, res: &mut Response) {
+    let state = depot.obtain::<Arc<State>>().unwrap();
+    let repository = SeaOrmProductRepository::new(state.db.clone());
+
+    match FindAllProductsQuery::new(repository).execute().await {
+        Ok(data) => res.render(Json(DataResponse::success(ProductResource::collection(
+            data,
+        )))),
+        Err(err) => {
+            res.status_code(StatusCode::INTERNAL_SERVER_ERROR);
+            res.render(Json(DataResponse::error(err.to_string())));
+        }
+    }
 }
 
 #[handler]
 async fn get_product_by_id(
     depot: &mut Depot,
+    req: &mut Request,
     res: &mut Response,
-) -> Result<Json<DataResponse<ProductResource>>, String> {
-    Ok(Json(DataResponse::success(ProductResource {
-        id: Some(1),
-        name: "xxx".to_string(),
-        description: None,
-        price: 29.99,
-        sku: "XXX-XXX.XX".to_string(),
-    })))
+) -> AppResult<()> {
+    let state = depot.obtain::<Arc<State>>().unwrap();
+    let repository = SeaOrmProductRepository::new(state.db.clone());
+
+    let id = req.params().get("id").cloned().unwrap().parse::<i32>()?;
+
+    match FindProductByIdQuery::new(repository).execute(id).await {
+        Ok(data) => {
+            res.render(Json(DataResponse::success(ProductResource::from(&data))));
+        }
+        Err(err) => {
+            res.status_code(StatusCode::INTERNAL_SERVER_ERROR);
+            res.render(Json(DataResponse::error(err.to_string())));
+        }
+    };
+
+    Ok(())
 }
 
 pub fn product_router() -> Router {
