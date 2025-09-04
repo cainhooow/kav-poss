@@ -10,18 +10,11 @@ impl MigrationTrait for Migration {
         manager
             .create_table(
                 Table::create()
-                    .table(Product::Table)
+                    .table(Role::Table)
                     .if_not_exists()
-                    .col(pk_auto(Product::Id))
-                    .col(ColumnDef::new(Product::Name).string().not_null())
-                    .col(ColumnDef::new(Product::Description).string().null())
-                    .col(ColumnDef::new(Product::Price).decimal().not_null())
-                    .col(
-                        ColumnDef::new(Product::Sku)
-                            .string()
-                            .unique_key()
-                            .not_null(),
-                    )
+                    .col(pk_auto(Role::Id))
+                    .col(ColumnDef::new(Role::Name).string().not_null())
+                    .col(ColumnDef::new(Role::Description).string().null())
                     .to_owned(),
             )
             .await
@@ -30,18 +23,15 @@ impl MigrationTrait for Migration {
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         // Replace the sample below with your own migration scripts
         manager
-            .drop_table(Table::drop().table(Product::Table).to_owned())
+            .drop_table(Table::drop().table(Role::Table).to_owned())
             .await
     }
 }
 
 #[derive(DeriveIden)]
-enum Product {
+pub enum Role {
     Table,
     Id,
     Name,
-    #[sea_orm(iden = "description")]
     Description,
-    Price,
-    Sku,
 }
