@@ -15,7 +15,7 @@ use crate::{
 };
 
 #[handler]
-async fn create(depot: &mut Depot, req: &mut Request, res: &mut Response)
+pub async fn create_product_handler(depot: &mut Depot, req: &mut Request, res: &mut Response)
 /* -> AppResult<Json<DataResponse<ProductResource>>> */
 {
     let state = depot.obtain::<Arc<State>>().unwrap();
@@ -46,7 +46,7 @@ async fn create(depot: &mut Depot, req: &mut Request, res: &mut Response)
 }
 
 #[handler]
-async fn index(depot: &mut Depot, res: &mut Response) {
+pub async fn index_product_handler(depot: &mut Depot, res: &mut Response) {
     let state = depot.obtain::<Arc<State>>().unwrap();
     let repository = SeaOrmProductRepository::new(state.db.clone());
 
@@ -62,7 +62,7 @@ async fn index(depot: &mut Depot, res: &mut Response) {
 }
 
 #[handler]
-async fn get_product_by_id(
+pub async fn get_product_by_id_handler(
     depot: &mut Depot,
     req: &mut Request,
     res: &mut Response,
@@ -84,11 +84,4 @@ async fn get_product_by_id(
     };
 
     Ok(())
-}
-
-pub fn product_router() -> Router {
-    Router::with_path("products")
-        .get(index)
-        .post(create)
-        .push(Router::with_path("/{id}").get(get_product_by_id))
 }
