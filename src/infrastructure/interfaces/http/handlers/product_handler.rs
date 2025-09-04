@@ -5,10 +5,9 @@ use crate::{
     State,
     application::{
         commands::product_handler::CreateProductUseCase,
-        exceptions::{AppError, AppResult},
+        exceptions::AppResult,
         queries::product_query::{FindAllProductsQuery, FindProductByIdQuery},
     },
-    domain::entities::product::product::Product,
     infrastructure::{
         interfaces::http::resources::{DataResponse, product_resource::ProductResource},
         persistence::sea_orm_product_repository::SeaOrmProductRepository,
@@ -75,6 +74,7 @@ async fn get_product_by_id(
 
     match FindProductByIdQuery::new(repository).execute(id).await {
         Ok(data) => {
+            res.status_code(StatusCode::OK);
             res.render(Json(DataResponse::success(ProductResource::from(&data))));
         }
         Err(err) => {

@@ -1,7 +1,7 @@
-use salvo::{handler, http::StatusCode, Depot, FlowCtrl, Request, Response};
+use salvo::{handler, Depot, FlowCtrl, Request, Response};
 
 
 #[handler]
-pub async fn global_catcher(req: &mut Request, res: &mut Response, ctrl: &mut FlowCtrl, depot: &mut Depot) {
+pub async fn global_catcher(_req: &mut Request, _res: &mut Response, _ctrl: &mut FlowCtrl, _depot: &mut Depot) {
     
 }
