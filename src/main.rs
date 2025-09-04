@@ -3,7 +3,7 @@ mod routers;
 use std::sync::Arc;
 
 use crate::{infrastructure::database::estabilish_connection, routers::routers};
-use salvo::prelude::*;
+use salvo::{catcher::Catcher, prelude::*};
 use sea_orm::DatabaseConnection;
 
 mod application;
@@ -19,14 +19,15 @@ pub struct State {
 async fn main() {
     tracing_subscriber::fmt().init();
     let acceptor = TcpListener::new("0.0.0.0:5050").bind().await;
-    let _ = dotenvy::dotenv();
+    _ = dotenvy::dotenv();
 
     let connection = estabilish_connection().await;
-    let router = Router::new()
+    let router = Router::with_path("api")
         .hoop(affix_state::inject(Arc::new(State {
             db: Arc::new(connection),
         })))
         .push(routers());
 
-    Server::new(acceptor).serve(router).await;
+    let router_service = Service::new(router).catcher(Catcher::default());
+    Server::new(acceptor).serve(router_service).await;
 }

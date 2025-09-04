@@ -1,0 +1,81 @@
+use salvo::prelude::*;
+use std::sync::Arc;
+
+use crate::{
+    State,
+    application::{
+        commands::product_handler::CreateProductUseCase,
+        exceptions::{AppError, AppResult},
+    },
+    domain::entities::product::product::Product,
+    infrastructure::{
+        interfaces::http::resources::{DataResponse, product_resource::ProductResource},
+        persistence::sea_orm_product_repository::SeaOrmProductRepository,
+    },
+};
+
+#[handler]
+async fn create(depot: &mut Depot, req: &mut Request, res: &mut Response)
+/* -> AppResult<Json<DataResponse<ProductResource>>> */
+{
+    let state = depot.obtain::<Arc<State>>().unwrap();
+
+    match req.parse_json::<ProductResource>().await {
+        Ok(data) => {
+            let repository = SeaOrmProductRepository::new(state.db.clone());
+
+            match CreateProductUseCase::new(repository)
+                .execute(data.name, data.price, data.sku, data.description)
+                .await
+            {
+                Ok(data) => {
+                    res.status_code(StatusCode::CREATED);
+                    res.render(Json(DataResponse::success(ProductResource::from(&data))));
+                }
+                Err(err) => {
+                    res.status_code(StatusCode::INTERNAL_SERVER_ERROR);
+                    res.render(Json(DataResponse::error(err.to_string())));
+                }
+            }
+        }
+        Err(err) => {
+            res.status_code(StatusCode::BAD_REQUEST);
+            res.render(Json(DataResponse::error(err.to_string())))
+        }
+    }
+}
+
+#[handler]
+async fn index(
+    depot: &mut Depot,
+    res: &mut Response,
+) -> Result<Json<DataResponse<ProductResource>>, String> {
+    Ok(Json(DataResponse::success(ProductResource {
+        id: Some(1),
+        name: "xxx".to_string(),
+        description: None,
+        price: 29.99,
+        sku: "XXX-XXX.XX".to_string(),
+    })))
+}
+
+#[handler]
+async fn get_product_by_id(
+    depot: &mut Depot,
+    res: &mut Response,
+) -> Result<Json<DataResponse<ProductResource>>, String> {
+    Ok(Json(DataResponse::success(ProductResource {
+        id: Some(1),
+        name: "xxx".to_string(),
+        description: None,
+        price: 29.99,
+        sku: "XXX-XXX.XX".to_string(),
+    })))
+}
+
+pub fn product_router() -> Router {
+    Router::with_path("products")
+        .get(index)
+        .post(create)
+        .push(Router::with_path("/{id}").get(get_product_by_id))
+}

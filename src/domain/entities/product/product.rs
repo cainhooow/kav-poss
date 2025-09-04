@@ -14,7 +14,7 @@ pub struct ProductBuilder {
     sku: String,
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct NewProduct {
     pub name: String,
     pub description: Option<String>,

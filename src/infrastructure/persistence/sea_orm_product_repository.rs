@@ -1,6 +1,6 @@
-use std::sync::Arc;
-
+use rust_decimal::{Decimal, prelude::FromPrimitive};
 use sea_orm::{ActiveModelTrait, ActiveValue::Set, DatabaseConnection, EntityTrait};
+use std::sync::Arc;
 
 use crate::{
     domain::{
@@ -33,6 +33,8 @@ impl ProductRepository for SeaOrmProductRepository {
     async fn save(&self, product: &NewProduct) -> Result<Product, RepositoryError> {
         let model = ProductModel::ActiveModel {
             name: Set(product.name.clone()),
+            price: Set(Decimal::from_f64(product.price).unwrap()),
+            sku: Set(product.sku.clone()),
             ..Default::default()
         };
 

@@ -1,6 +1,9 @@
+use salvo::{writing::Text, Depot, Request, Response, Writer};
 use thiserror::Error;
 
-use crate::domain::exceptions::RepositoryError;
+use crate::{
+    domain::exceptions::RepositoryError,
+};
 
 #[derive(Debug, Error)]
 pub enum AppError {
@@ -24,3 +27,11 @@ impl From<RepositoryError> for AppError {
         }
     }
 }
+
+// #[async_trait::async_trait]
+// impl Writer for AppError {
+//     async fn write(mut self, _req: &mut Request, depot: &mut Depot, res: &mut Response) {
+//         println!("{:?} {:?} {:?}", depot, _req, res);
+//         res.render(Text::Plain("I'm a error, hahaha!"));
+//     }
+// }

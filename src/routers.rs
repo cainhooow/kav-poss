@@ -1,6 +1,7 @@
 use salvo::prelude::*;
 
-use crate::infrastructure::interfaces::controllers::product_api::product_router;
+use crate::infrastructure::interfaces::http::handlers::product_handler::product_router;
+
 
 pub fn routers() -> Router {
     Router::with_path("v1")

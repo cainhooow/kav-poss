@@ -19,10 +19,20 @@ impl<R: ProductRepository> CreateProductUseCase<R> {
         Self { repository: repo }
     }
 
-    pub async fn execute(&self, name: String, description: Option<String>) -> AppResult<Product> {
-        let product = ProductBuilder::new(name).description(description).build();
-        let created_product = self.repository.save(&product).await?;
-        Ok(created_product)
+    pub async fn execute(
+        &self,
+        name: String,
+        price: f64,
+        sku: String,
+        description: Option<String>,
+    ) -> AppResult<Product> {
+        let product = ProductBuilder::new(name, price, sku)
+            .description(description)
+            .build();
+
+        println!("product: {:?}", product);
+        
+        Ok(self.repository.save(&product).await?)
     }
 }
 
