@@ -1,5 +1,5 @@
 use crate::domain::{
-    entities::product::product::{NewProduct, Product},
+    entities::product::{NewProduct, Product},
     exceptions::RepositoryError,
 };
 

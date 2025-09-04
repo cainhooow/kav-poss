@@ -1,7 +1,7 @@
 use rust_decimal::prelude::ToPrimitive;
 
 use crate::{
-    domain::entities::product::product::Product,
+    domain::entities::product::Product,
     infrastructure::entities::product::Model as ProductModel,
 };
 

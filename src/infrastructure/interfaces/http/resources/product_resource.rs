@@ -1,4 +1,4 @@
-use crate::domain::entities::product::product::Product;
+use crate::domain::entities::product::Product;
 use rust_decimal::prelude::ToPrimitive;
 use serde::{Deserialize, Serialize};
 

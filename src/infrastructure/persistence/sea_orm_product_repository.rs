@@ -4,7 +4,7 @@ use std::sync::Arc;
 
 use crate::{
     domain::{
-        entities::product::product::{NewProduct, Product},
+        entities::product::{NewProduct, Product},
         exceptions::RepositoryError,
         repositories::product_repository_interface::ProductRepository,
     },
