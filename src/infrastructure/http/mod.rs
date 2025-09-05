@@ -1,4 +1,5 @@
 use std::{env, sync::Arc};
+pub mod middlewares;
 
 use salvo::prelude::*;
 use sea_orm::DatabaseConnection;
@@ -6,18 +7,21 @@ use sea_orm::DatabaseConnection;
 #[derive(Default, Clone, Debug)]
 pub struct State {
     pub db: Arc<DatabaseConnection>,
-    pub auth_service: Arc<JwtAuthService>
+    pub auth_service: Arc<JwtAuthService>,
 }
 
-use crate::infrastructure::{database::estabilish_connection, interfaces::http::routers::routers, services::jwt_auth_service::JwtAuthService};
+use crate::infrastructure::{
+    database::estabilish_connection, interfaces::http::routers::routers,
+    services::jwt_auth_service::JwtAuthService,
+};
 
 async fn create_state() -> Arc<State> {
     let connection = estabilish_connection().await;
     let jwt_secret = env::var("JWT_AUTH_SECRET").expect("JWT_AUTH_SECRET NOT PROVIDED");
-    
+
     Arc::new(State {
         db: Arc::new(connection),
-        auth_service: Arc::new(JwtAuthService::new(jwt_secret))
+        auth_service: Arc::new(JwtAuthService::new(jwt_secret)),
     })
 }
 
