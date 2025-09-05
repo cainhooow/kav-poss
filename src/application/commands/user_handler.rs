@@ -1,3 +1,5 @@
+use argon2::{Argon2, PasswordHasher, PasswordVerifier, password_hash::Salt};
+
 use crate::{
     application::exceptions::AppResult,
     domain::{
@@ -15,8 +17,12 @@ impl<R: UserRepository> CreateUserUseCase<R> {
         Self { repository: repo }
     }
 
-    pub async fn execute(&self, name: String, email: String, password: String) -> AppResult<User> {
-        let user = UserBuilder::new(name, email, password).build();
+    pub async fn execute(&self, name: String, email: String, password: &str) -> AppResult<User> {
+        let argon2 = Argon2::default();
+        let salt: Salt = password.try_into().unwrap();
+        let password = argon2.hash_password(password.as_bytes(), salt)?;
+        
+        let user = UserBuilder::new(name, email, password.to_string()).build();
         Ok(self.repository.save(&user).await?)
     }
 }

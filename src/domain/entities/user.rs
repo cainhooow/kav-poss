@@ -32,6 +32,21 @@ impl UserBuilder {
         }
     }
 
+    pub fn name(mut self, name: impl Into<String>) -> Self {
+        self.name = name.into();
+        self
+    }
+
+    pub fn email(mut self, email: impl Into<String>) -> Self {
+        self.email = email.into();
+        self
+    }
+
+    pub fn password(mut self, password: impl Into<String>) -> Self {
+        self.password = password.into();
+        self
+    }
+
     pub fn build(self) -> NewUser {
         NewUser {
             name: self.name,

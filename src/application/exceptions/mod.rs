@@ -1,6 +1,6 @@
+use crate::domain::exceptions::RepositoryError;
 use std::num::{IntErrorKind, ParseIntError};
 use thiserror::Error;
-use crate::domain::exceptions::RepositoryError;
 
 #[derive(Debug, Error)]
 pub enum AppError {
@@ -33,6 +33,14 @@ impl From<ParseIntError> for AppError {
                 AppError::Unexpected(format!("Provided value is invalid int(i32, i64)"))
             }
             _ => AppError::Unexpected(format!("ParseInt error")),
+        }
+    }
+}
+
+impl From<argon2::password_hash::Error> for AppError {
+    fn from(err: argon2::password_hash::Error) -> Self {
+        match err {
+            _ => AppError::Unexpected(format!("Argon2 Error. failed to hash password")),
         }
     }
 }
