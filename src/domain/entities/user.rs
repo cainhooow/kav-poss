@@ -14,9 +14,9 @@ pub struct UserBuilder {
 
 #[derive(Clone, Debug)]
 pub struct NewUser {
-    name: String,
-    email: String,
-    password: String,
+    pub name: String,
+    pub email: String,
+    pub password: String,
 }
 
 impl UserBuilder {
