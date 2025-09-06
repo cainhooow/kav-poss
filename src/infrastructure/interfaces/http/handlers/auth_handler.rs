@@ -1,7 +1,11 @@
-pub fn auth_local() {
+use salvo::prelude::*;
+
+#[handler]
+pub async fn auth_local() {
 
 }
 
-pub fn auth_register() {
+#[handler]
+pub async fn auth_register() {
     
 }
