@@ -3,8 +3,7 @@ use argon2::{Argon2, PasswordHasher, PasswordVerifier, password_hash::Salt};
 use crate::{
     application::exceptions::AppResult,
     domain::{
-        entities::user::{User, UserBuilder},
-        repositories::user_repository_interface::UserRepository,
+        builders::user_builder::UserBuilder, entities::user::User, repositories::user_repository_interface::UserRepository
     },
 };
 
