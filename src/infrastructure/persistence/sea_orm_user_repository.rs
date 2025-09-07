@@ -1,17 +1,19 @@
 use std::sync::Arc;
 
-use crate::domain::{
-    entities::user::{NewUser, User},
+use crate::{domain::{
+    entities::{
+        role::RolesEnum,
+        user::{NewUser, User},
+    },
     exceptions::RepositoryError,
     repositories::user_repository_interface::UserRepository,
-};
+}, infrastructure::mappers::user_mapper::UserMapper};
 use sea_orm::{
-    ActiveModelTrait, ActiveValue::Set, ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter,
+    ActiveModelTrait, ActiveValue::Set, ColumnTrait, DatabaseConnection, EntityTrait, ModelTrait,
+    QueryFilter,
 };
 
-use crate::infrastructure::entities::user::{
-    self as UserModel, Column as UserCol, Entity as UserEntity,
-};
+use crate::infrastructure::entities::{role, user};
 
 pub struct SeaOrmUserRepository {
     conn: Arc<DatabaseConnection>,
@@ -26,7 +28,7 @@ impl SeaOrmUserRepository {
 #[async_trait::async_trait]
 impl UserRepository for SeaOrmUserRepository {
     async fn save(&self, user: &NewUser) -> Result<User, RepositoryError> {
-        let model = UserModel::ActiveModel {
+        let model = user::ActiveModel {
             name: Set(user.name.clone()),
             email: Set(user.email.clone()),
             password: Set(user.password.clone()),
@@ -40,21 +42,26 @@ impl UserRepository for SeaOrmUserRepository {
     }
 
     async fn find_by_id(&self, id: i32) -> Result<User, RepositoryError> {
-        match UserEntity::find_by_id(id).one(&*self.conn).await {
-            Ok(data) => {
-                if let Some(user) = data {
-                    Ok(User::from(user))
-                } else {
-                    Err(RepositoryError::NotFound)
-                }
-            }
-            Err(err) => Err(RepositoryError::Generic(err.to_string())),
+        let user = user::Entity::find_by_id(id).one(&*self.conn).await?;
+
+        if let Some(user) = user {
+            let roles = user
+                .find_related(role::Entity)
+                .all(&*self.conn)
+                .await?
+                .into_iter()
+                .map(|x| RolesEnum::from_str(&x.name).unwrap())
+                .collect::<Vec<RolesEnum>>();
+
+            Ok(UserMapper::with_roles(User::from(user), roles))
+        } else {
+            Err(RepositoryError::NotFound)
         }
     }
 
     async fn find_by_email(&self, email: String) -> Result<User, RepositoryError> {
-        match UserEntity::find()
-            .filter(UserCol::Email.eq(email))
+        match user::Entity::find()
+            .filter(user::Column::Email.eq(email))
             .one(&*self.conn)
             .await
         {

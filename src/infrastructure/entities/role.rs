@@ -17,9 +17,13 @@ pub enum Relation {
     UserRolesPivot,
 }
 
-impl Related<super::user_roles_pivot::Entity> for Entity {
+impl Related<super::user::Entity> for Entity {
     fn to() -> RelationDef {
-        Relation::UserRolesPivot.def()
+        super::user_roles_pivot::Relation::User.def()
+    }
+
+    fn via() -> Option<RelationDef> {
+        Some(super::user_roles_pivot::Relation::User.def().rev())
     }
 }
 

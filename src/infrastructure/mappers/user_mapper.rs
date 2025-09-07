@@ -1,5 +1,10 @@
+use sea_orm::ModelTrait;
+
+use crate::domain::entities::role::RolesEnum;
 use crate::domain::entities::user::User;
-use crate::infrastructure::entities::user::Model as UserModel;
+use crate::infrastructure::entities::{role::Model as RoleModel, user::Model as UserModel};
+
+pub struct UserMapper;
 
 impl From<UserModel> for User {
     fn from(value: UserModel) -> Self {
@@ -8,6 +13,14 @@ impl From<UserModel> for User {
             name: value.name,
             email: value.email,
             password: value.password,
+            roles: vec![],
         }
+    }
+}
+
+impl UserMapper {
+    pub fn with_roles(mut user: User, roles: Vec<RolesEnum>) -> User {
+        user.roles = roles;
+        user
     }
 }
