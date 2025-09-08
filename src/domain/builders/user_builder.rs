@@ -1,4 +1,4 @@
-use crate::domain::entities:: user::NewUser;
+use crate::domain::entities::user::NewUser;
 
 pub struct RoleBuilder {
     name: String,

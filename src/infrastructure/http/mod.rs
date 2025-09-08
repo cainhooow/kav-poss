@@ -11,12 +11,13 @@ pub struct State {
 }
 
 use crate::infrastructure::{
-    database::estabilish_connection, interfaces::http::routers::routers,
+    database::{estabilish_connection}, interfaces::http::routers::routers,
     services::jwt_auth_service::JwtAuthService,
 };
 
 async fn create_state() -> Arc<State> {
     let connection = estabilish_connection().await;
+
     let jwt_secret = env::var("JWT_AUTH_SECRET").expect("JWT_AUTH_SECRET NOT PROVIDED");
 
     Arc::new(State {

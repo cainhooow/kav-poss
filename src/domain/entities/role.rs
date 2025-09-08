@@ -1,9 +1,17 @@
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+use sea_orm::EnumIter;
+use std::str::FromStr;
+use strum_macros::{Display, EnumString};
+
+#[derive(Debug, Display, EnumString, EnumIter, Clone)]
 
 pub enum RolesEnum {
-    CanAddBussines,
+    CanCreateBussines,
     CanUpdateBussines,
     CanModifyBussines,
+    CanCreateSalePoint,
+    CanUpdateSalePoint,
+    CanModifySalePoint,
+    CanManageUsersSalePoints,
 }
 
 #[derive(Debug, Clone)]
@@ -19,21 +27,21 @@ pub struct NewRole {
     pub description: Option<String>,
 }
 
-impl RolesEnum {
-    pub fn as_str(&self) -> &'static str {
-        match self {
-            RolesEnum::CanAddBussines => "CAN_ADD_BUSSINESS",
-            RolesEnum::CanUpdateBussines => "CAN_UPDATE_BUSSINES",
-            RolesEnum::CanModifyBussines => "CAN_MODIFY_BUSSINES",
-        }
-    }
+// impl RolesEnum {
+//     pub fn as_str(&self) -> &'static str {
+//         match self {
+//             RolesEnum::CanCreateBussines => "CAN_CREATE_BUSSINESS",
+//             RolesEnum::CanUpdateBussines => "CAN_UPDATE_BUSSINES",
+//             RolesEnum::CanModifyBussines => "CAN_MODIFY_BUSSINES",
+//         }
+//     }
 
-    pub fn from_str(readable_role: &str) -> Option<Self> {
-        match readable_role {
-            "CAN_ADD_BUSSINES" => Some(RolesEnum::CanAddBussines),
-            "CAN_UPDATE_BUSSINES" => Some(RolesEnum::CanUpdateBussines),
-            "CAN_MODIFY_BUSSINES" => Some(RolesEnum::CanModifyBussines),
-            _ => None,
-        }
-    }
-}
+//     pub fn from_str(readable_role: &str) -> Option<Self> {
+//         match readable_role {
+//             "CAN_CREATE_BUSSINES" => Some(RolesEnum::CanCreateBussines),
+//             "CAN_UPDATE_BUSSINES" => Some(RolesEnum::CanUpdateBussines),
+//             "CAN_MODIFY_BUSSINES" => Some(RolesEnum::CanModifyBussines),
+//             _ => None,
+//         }
+//     }
+// }

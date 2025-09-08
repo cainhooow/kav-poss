@@ -1,8 +1,7 @@
 use crate::{
     application::exceptions::AppResult,
     domain::{
-        entities::product::Product,
-        repositories::product_repository_interface::ProductRepository,
+        entities::product::Product, repositories::product_repository_interface::ProductRepository,
     },
 };
 

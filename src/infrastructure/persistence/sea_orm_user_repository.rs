@@ -1,13 +1,16 @@
-use std::sync::Arc;
+use std::{str::FromStr, sync::Arc};
 
-use crate::{domain::{
-    entities::{
-        role::RolesEnum,
-        user::{NewUser, User},
+use crate::{
+    domain::{
+        entities::{
+            role::RolesEnum,
+            user::{NewUser, User},
+        },
+        exceptions::RepositoryError,
+        repositories::user_repository_interface::UserRepository,
     },
-    exceptions::RepositoryError,
-    repositories::user_repository_interface::UserRepository,
-}, infrastructure::mappers::user_mapper::UserMapper};
+    infrastructure::mappers::user_mapper::UserMapper,
+};
 use sea_orm::{
     ActiveModelTrait, ActiveValue::Set, ColumnTrait, DatabaseConnection, EntityTrait, ModelTrait,
     QueryFilter,
@@ -50,7 +53,7 @@ impl UserRepository for SeaOrmUserRepository {
                 .all(&*self.conn)
                 .await?
                 .into_iter()
-                .map(|x| RolesEnum::from_str(&x.name).unwrap())
+                .map(|r| RolesEnum::from_str(&r.name).unwrap())
                 .collect::<Vec<RolesEnum>>();
 
             Ok(UserMapper::with_roles(User::from(user), roles))

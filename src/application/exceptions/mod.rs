@@ -6,10 +6,8 @@ use thiserror::Error;
 pub enum AppError {
     #[error("Domain error: {0}")]
     Domain(String),
-
     #[error("Repository error: {0}")]
     Repository(String),
-
     #[error("Unexpected error: {0}")]
     Unexpected(String),
 }

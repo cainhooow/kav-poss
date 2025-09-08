@@ -1,3 +1,5 @@
+use std::str::FromStr;
+
 use crate::domain::entities::role::{Role, RolesEnum};
 use crate::infrastructure::entities::role::Model as RoleModel;
 

@@ -1,4 +1,7 @@
-use crate::domain::{entities::user::{NewUser, User}, exceptions::RepositoryError};
+use crate::domain::{
+    entities::user::{NewUser, User},
+    exceptions::RepositoryError,
+};
 
 #[async_trait::async_trait]
 pub trait UserRepository: Send + Sync {

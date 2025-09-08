@@ -6,7 +6,7 @@ pub struct User {
     pub name: String,
     pub email: String,
     pub password: String,
-    pub roles: Vec<RolesEnum>
+    pub roles: Vec<RolesEnum>,
 }
 
 #[derive(Clone, Debug)]

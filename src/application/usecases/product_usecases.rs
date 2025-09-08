@@ -27,7 +27,7 @@ impl<R: ProductRepository> CreateProductUseCase<R> {
             .build();
 
         println!("product: {:?}", product);
-        
+
         Ok(self.repository.save(&product).await?)
     }
 }

@@ -24,3 +24,5 @@ crypto = { version = "0.5.1", features = ["password-hash"] }
 argon2 = "0.5.3"
 time = "0.3.43"
 jsonwebtoken = "9.3.1"
+strum = "0.27.2"
+strum_macros = "0.27.2"

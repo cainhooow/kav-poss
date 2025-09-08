@@ -4,7 +4,8 @@ use crate::{
     application::exceptions::AppResult,
     domain::{
         builders::user_builder::UserBuilder,
-        entities::user::User,
+        entities::{role::RolesEnum, user::User},
+        exceptions::RepositoryError,
         repositories::{
             role_repository_interface::RoleRepository, user_repository_interface::UserRepository,
         },
@@ -43,12 +44,26 @@ impl<U: UserRepository, R: RoleRepository> CreateUserWithRolesUseCase<U, R> {
         }
     }
 
-    pub async fn execute(&self, name: String, email: String, password: &str) -> AppResult<User> {
+    pub async fn execute(
+        &self,
+        name: String,
+        email: String,
+        password: &str,
+        roles: Vec<RolesEnum>,
+    ) -> AppResult<User> {
         let argon2 = Argon2::default();
         let salt: Salt = password.try_into().unwrap();
         let password = argon2.hash_password(password.as_bytes(), salt)?;
-
         let user = UserBuilder::new(name, email, password.to_string()).build();
-        Ok(self.user_repository.save(&user).await?)
+
+        match self.user_repository.save(&user).await {
+            Ok(user) => {
+                self.role_repository
+                    .assign_roles_to_user(roles, user.id.unwrap())
+                    .await?;
+                Ok(user)
+            }
+            Err(err) => AppResult::Err(err.into()),
+        }
     }
 }

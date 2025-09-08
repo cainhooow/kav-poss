@@ -1,7 +1,7 @@
 use sea_orm::{
     ActiveModelTrait, ActiveValue::Set, ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter,
 };
-use std::sync::Arc;
+use std::{str::FromStr, sync::Arc};
 
 use crate::domain::{
     entities::role::{NewRole, Role, RolesEnum},
@@ -52,7 +52,7 @@ impl RoleRepository for SeaOrmRoleRepository {
     async fn select_roles(&self, select: Vec<RolesEnum>) -> Result<Vec<Role>, RepositoryError> {
         let roles_names: Vec<String> = select
             .into_iter()
-            .map(|r| RolesEnum::as_str(&r).to_string())
+            .map(|r| RolesEnum::to_string(&r))
             .collect();
 
         match role::Entity::find()

@@ -1,6 +1,5 @@
-use std::sync::Arc;
-
 use salvo::prelude::*;
+use std::sync::Arc;
 
 use crate::infrastructure::{http::State, interfaces::http::resources::DataResponse};
 pub struct AuthMiddleware;
