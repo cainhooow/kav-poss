@@ -1,6 +1,8 @@
+use core_server::RoleEnum;
+
 use crate::domain::{
     entities::{
-        role::{NewRole, Role, RolesEnum},
+        role::{NewRole, Role},
         user::User,
     },
     exceptions::RepositoryError,
@@ -10,10 +12,10 @@ use crate::domain::{
 pub trait RoleRepository: Send + Sync {
     async fn save(&self, role: &NewRole) -> Result<Role, RepositoryError>;
     async fn find_by_id(&self, id: i32) -> Result<Role, RepositoryError>;
-    async fn select_roles(&self, select: Vec<RolesEnum>) -> Result<Vec<Role>, RepositoryError>;
+    async fn select_roles(&self, select: Vec<RoleEnum>) -> Result<Vec<Role>, RepositoryError>;
     async fn assign_roles_to_user(
         &self,
-        roles: Vec<RolesEnum>,
+        roles: Vec<RoleEnum>,
         user_id: i32,
     ) -> Result<(), RepositoryError>;
 }

@@ -1,10 +1,11 @@
 use argon2::{Argon2, PasswordHasher, PasswordVerifier, password_hash::Salt};
+use core_server::RoleEnum;
 
 use crate::{
     application::exceptions::AppResult,
     domain::{
         builders::user_builder::UserBuilder,
-        entities::{role::RolesEnum, user::User},
+        entities::{user::User},
         exceptions::RepositoryError,
         repositories::{
             role_repository_interface::RoleRepository, user_repository_interface::UserRepository,
@@ -49,7 +50,7 @@ impl<U: UserRepository, R: RoleRepository> CreateUserWithRolesUseCase<U, R> {
         name: String,
         email: String,
         password: &str,
-        roles: Vec<RolesEnum>,
+        roles: Vec<RoleEnum>,
     ) -> AppResult<User> {
         let argon2 = Argon2::default();
         let salt: Salt = password.try_into().unwrap();

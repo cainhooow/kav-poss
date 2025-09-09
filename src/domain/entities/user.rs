@@ -1,4 +1,4 @@
-use crate::domain::entities::role::RolesEnum;
+use core_server::RoleEnum;
 
 #[derive(Debug, Clone)]
 pub struct User {
@@ -6,7 +6,7 @@ pub struct User {
     pub name: String,
     pub email: String,
     pub password: String,
-    pub roles: Vec<RolesEnum>,
+    pub roles: Vec<RoleEnum>,
 }
 
 #[derive(Clone, Debug)]

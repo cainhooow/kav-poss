@@ -1,6 +1,6 @@
+use core_server::RoleEnum;
 use sea_orm::ModelTrait;
 
-use crate::domain::entities::role::RolesEnum;
 use crate::domain::entities::user::User;
 use crate::infrastructure::entities::{role::Model as RoleModel, user::Model as UserModel};
 
@@ -19,7 +19,7 @@ impl From<UserModel> for User {
 }
 
 impl UserMapper {
-    pub fn with_roles(mut user: User, roles: Vec<RolesEnum>) -> User {
+    pub fn with_roles(mut user: User, roles: Vec<RoleEnum>) -> User {
         user.roles = roles;
         user
     }

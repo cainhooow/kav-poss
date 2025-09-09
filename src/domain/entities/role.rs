@@ -1,18 +1,4 @@
 use sea_orm::EnumIter;
-use std::str::FromStr;
-use strum_macros::{Display, EnumString};
-
-#[derive(Debug, Display, EnumString, EnumIter, Clone)]
-
-pub enum RolesEnum {
-    CanCreateBussines,
-    CanUpdateBussines,
-    CanModifyBussines,
-    CanCreateSalePoint,
-    CanUpdateSalePoint,
-    CanModifySalePoint,
-    CanManageUsersSalePoints,
-}
 
 #[derive(Debug, Clone)]
 pub struct Role {

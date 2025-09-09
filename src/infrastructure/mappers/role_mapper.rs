@@ -1,11 +1,13 @@
 use std::str::FromStr;
 
-use crate::domain::entities::role::{Role, RolesEnum};
+use core_server::RoleEnum;
+
+use crate::domain::entities::role::Role;
 use crate::infrastructure::entities::role::Model as RoleModel;
 
-impl From<RoleModel> for RolesEnum {
+impl From<RoleModel> for RoleEnum {
     fn from(value: RoleModel) -> Self {
-        RolesEnum::from_str(&value.name).unwrap()
+        RoleEnum::from_str(&value.name).unwrap()
     }
 }
 

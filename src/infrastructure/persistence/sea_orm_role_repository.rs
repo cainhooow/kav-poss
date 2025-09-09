@@ -1,10 +1,11 @@
+use core_server::RoleEnum;
 use sea_orm::{
     ActiveModelTrait, ActiveValue::Set, ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter,
 };
 use std::{str::FromStr, sync::Arc};
 
 use crate::domain::{
-    entities::role::{NewRole, Role, RolesEnum},
+    entities::role::{NewRole, Role},
     exceptions::RepositoryError,
     repositories::role_repository_interface::RoleRepository,
 };
@@ -49,10 +50,10 @@ impl RoleRepository for SeaOrmRoleRepository {
         }
     }
 
-    async fn select_roles(&self, select: Vec<RolesEnum>) -> Result<Vec<Role>, RepositoryError> {
+    async fn select_roles(&self, select: Vec<RoleEnum>) -> Result<Vec<Role>, RepositoryError> {
         let roles_names: Vec<String> = select
             .into_iter()
-            .map(|r| RolesEnum::to_string(&r))
+            .map(|r| RoleEnum::to_string(&r))
             .collect();
 
         match role::Entity::find()
@@ -67,7 +68,7 @@ impl RoleRepository for SeaOrmRoleRepository {
 
     async fn assign_roles_to_user(
         &self,
-        roles: Vec<RolesEnum>,
+        roles: Vec<RoleEnum>,
         user_id: i32,
     ) -> Result<(), RepositoryError> {
         let roles = self.select_roles(roles).await?;

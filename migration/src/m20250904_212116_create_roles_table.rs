@@ -1,4 +1,5 @@
 use sea_orm_migration::{prelude::*, schema::*};
+use sea_orm_migration::sea_orm;
 
 #[derive(DeriveMigrationName)]
 pub struct Migration;
@@ -13,7 +14,7 @@ impl MigrationTrait for Migration {
                     .table(Role::Table)
                     .if_not_exists()
                     .col(pk_auto(Role::Id))
-                    .col(ColumnDef::new(Role::Name).string().not_null())
+                    .col(ColumnDef::new(Role::Name).unique_key().string().not_null())
                     .col(ColumnDef::new(Role::Description).string().null())
                     .to_owned(),
             )
