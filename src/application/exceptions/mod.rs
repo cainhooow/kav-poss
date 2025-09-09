@@ -1,4 +1,5 @@
 use crate::domain::exceptions::RepositoryError;
+use argon2::password_hash::Error as ArgonError;
 use std::num::{IntErrorKind, ParseIntError};
 use thiserror::Error;
 
@@ -25,6 +26,7 @@ impl From<RepositoryError> for AppError {
 
 impl From<ParseIntError> for AppError {
     fn from(value: ParseIntError) -> Self {
+        println!("ParseInt error: {}", value);
         let error_kind = value.kind();
         match error_kind {
             IntErrorKind::InvalidDigit => {
@@ -35,10 +37,11 @@ impl From<ParseIntError> for AppError {
     }
 }
 
-impl From<argon2::password_hash::Error> for AppError {
-    fn from(err: argon2::password_hash::Error) -> Self {
+impl From<ArgonError> for AppError {
+    fn from(err: ArgonError) -> Self {
+        println!("Argo2 exception: {}", err);
         match err {
-            _ => AppError::Unexpected(format!("Argon2 Error. failed to hash password")),
+            _ => AppError::Unexpected(format!("Argon2 Error: failed to hash password. Err: {}", err.to_string())),
         }
     }
 }

@@ -1,8 +1,9 @@
-use strum_macros::{Display, EnumIter, EnumString};
-use strum::IntoEnumIterator;
+use serde::{Deserialize, Serialize};
 use std::str::FromStr;
+use strum::IntoEnumIterator;
+use strum_macros::{Display, EnumIter, EnumString};
 
-#[derive(Debug, Clone, EnumString, EnumIter, Display)]
+#[derive(Debug, Clone, EnumString, EnumIter, Display, Serialize, Deserialize)]
 pub enum RoleEnum {
     CanCreateBussines,
     CanUpdateBussines,

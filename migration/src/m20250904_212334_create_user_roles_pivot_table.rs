@@ -29,13 +29,13 @@ impl MigrationTrait for Migration {
                     .if_not_exists()
                     .col(
                         ColumnDef::new(UserRolesPivot::RoleId)
-                            .big_integer()
+                            .integer()
                             .not_null()
                             .primary_key(),
                     )
                     .col(
                         ColumnDef::new(UserRolesPivot::UserId)
-                            .big_integer()
+                            .integer()
                             .not_null(),
                     )
                     .foreign_key(&mut users_fk)

@@ -1,3 +1,4 @@
+use core_server::RoleEnum;
 use serde::{Deserialize, Serialize};
 
 use crate::domain::entities::user::User;
@@ -14,6 +15,7 @@ pub struct UserResource {
     pub id: Option<i32>,
     pub name: String,
     pub email: String,
+    pub roles: Vec<RoleEnum>
 }
 
 impl From<&User> for UserResource {
@@ -22,6 +24,7 @@ impl From<&User> for UserResource {
             id: value.id,
             name: value.name.clone(),
             email: value.email.clone(),
+            roles: value.roles.clone()
         }
     }
 }
@@ -32,6 +35,7 @@ impl From<User> for UserResource {
             id: value.id,
             name: value.name,
             email: value.email,
+            roles: value.roles.clone()
         }
     }
 }
