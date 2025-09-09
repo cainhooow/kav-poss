@@ -19,4 +19,4 @@ if (Test-Path $env) {
 }
 
 
-sea-orm-cli generate entity -u $env:DATABASE_URL -o src/infrastructure/entities
+sea-orm-cli generate entity -u $env:DATABASE_URL -o generated
