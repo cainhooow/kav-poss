@@ -15,7 +15,16 @@ pub struct UserResource {
     pub id: Option<i32>,
     pub name: String,
     pub email: String,
-    pub roles: Vec<RoleEnum>
+    pub roles: Vec<RoleEnum>,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct UserAuthResource {
+    pub user: UserResource,
+    #[serde(rename(serialize = "accessToken"))]
+    pub access_token: String,
+    #[serde(rename(serialize = "refreshToken"))]
+    pub refresh_token: String,
 }
 
 impl From<&User> for UserResource {
@@ -24,7 +33,7 @@ impl From<&User> for UserResource {
             id: value.id,
             name: value.name.clone(),
             email: value.email.clone(),
-            roles: value.roles.clone()
+            roles: value.roles.clone(),
         }
     }
 }
@@ -35,7 +44,7 @@ impl From<User> for UserResource {
             id: value.id,
             name: value.name,
             email: value.email,
-            roles: value.roles.clone()
+            roles: value.roles.clone(),
         }
     }
 }

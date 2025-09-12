@@ -13,14 +13,14 @@ impl<T> DataResponse<T> {
     pub fn success(data: T) -> Self {
         DataResponse {
             success: true,
-            data: data,
+            data,
         }
     }
 
     pub fn error(data: T) -> Self {
         DataResponse {
             success: false,
-            data: data,
+            data,
         }
     }
 }
