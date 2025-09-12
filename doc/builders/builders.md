@@ -37,7 +37,7 @@ if let Some(description) = role_description {
 let role = role_builder.build() // ERRO - role_builder foi movido para dentro da validação;
 ```
 
-### Para solucionar esse problema, você precisa "herdar" a variavel e retornar builder dentro da validação, isso explica o motivo de `.description(<String>)` não ser usado, pois teria que criar validações extras
+### Para solucionar esse problema, você precisa "herdar a variavel" e retornar builder dentro da validação, isso explica o motivo de `.description(<String>)` não ser usado, pois teria que criar validações extras
 
 ```rs
 // recebe de algum outro lugar = request, etc...
