@@ -5,6 +5,7 @@ use strum_macros::{Display, EnumIter, EnumString};
 
 #[derive(Debug, Clone, EnumString, EnumIter, Display, Serialize, Deserialize)]
 pub enum RoleEnum {
+    CanAuthenticate,
     CanCreateUser,
     CanUpdateUser,
     CanDeleteUser,
