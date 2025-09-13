@@ -29,7 +29,7 @@ impl Handler for AuthMiddleware {
                     }
                 },
                 Err(err) => {
-                    res.render(Json(DataResponse::error("Invalid access token")));
+                    res.render(DataResponse::error("Invalid access token"));
                     res.status_code(StatusCode::UNAUTHORIZED);
                 }
             }
@@ -43,12 +43,12 @@ impl Handler for AuthMiddleware {
                     ctrl.call_next(req, depot, res).await;
                 }
                 Err(_) => {
-                    res.render(Json(DataResponse::error("Invalid access token cookie")));
+                    res.render(DataResponse::error("Invalid access token cookie"));
                     res.status_code(StatusCode::UNAUTHORIZED);
                 }
             }
         } else {
-            res.render(Json(DataResponse::error("Access token absent")));
+            res.render(DataResponse::error("Access token absent"));
             res.status_code(StatusCode::UNAUTHORIZED);
         }
     }
