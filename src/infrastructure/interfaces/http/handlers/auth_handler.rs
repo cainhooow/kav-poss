@@ -1,15 +1,19 @@
 use std::sync::Arc;
 
+use argon2::{Argon2, PasswordHash, password_hash::PasswordVerifier};
 use core_server::RoleEnum;
-use salvo::prelude::*;
+use salvo::{flash::FlashDepotExt, http::{HeaderMap, HeaderValue}, prelude::*};
 
 use crate::{
-    application::{exceptions::AppResult, usecases::user_usecases::CreateUserWithRolesUseCase},
+    application::{
+        exceptions::AppResult, queries::user_query::FindUserByEmailQuery,
+        usecases::user_usecases::CreateUserWithRolesUseCase,
+    },
     infrastructure::{
         http::State,
         interfaces::http::resources::{
             DataResponse,
-            user_resource::{UserRequest, UserResource},
+            user_resource::{AuthRequest, UserAuthResource, UserRequest, UserResource},
         },
         persistence::{
             sea_orm_role_repository::SeaOrmRoleRepository,
@@ -19,7 +23,47 @@ use crate::{
 };
 
 #[handler]
-pub async fn auth_local(req: &mut Request, res: &mut Response, depot: &mut Depot) {}
+pub async fn auth_local_login(
+    req: &mut Request,
+    res: &mut Response,
+    depot: &mut Depot,
+) -> AppResult<()> {
+    let state = depot.obtain::<Arc<State>>().unwrap().to_owned();
+    match req.parse_json::<AuthRequest>().await {
+        Ok(req) => {
+            let user_respository = SeaOrmUserRepository::new(state.db.clone());
+            match FindUserByEmailQuery::new(user_respository)
+                .execute(req.email)
+                .await
+            {
+                Ok(user) => {
+                    let argon2 = Argon2::default();
+                    let password_hash = PasswordHash::new(&user.password)?;
+                    argon2.verify_password(req.password.as_bytes(), &password_hash)?;
+                    let tokens = state.auth_service.generate(user.id.unwrap())?;
+
+                    res.render(Json(DataResponse::success(UserAuthResource::new(
+                        user,
+                        tokens.access_token,
+                        tokens.refresh_token,
+                    ))))
+                }
+                Err(_) => {
+                    res.status_code(StatusCode::UNAUTHORIZED);
+                    res.render(Json(DataResponse::error(String::from(
+                        "Invalid user email/username or password",
+                    ))))
+                }
+            }
+        }
+        Err(err) => {
+            res.status_code(StatusCode::BAD_REQUEST);
+            res.render(Json(DataResponse::error(err.to_string())))
+        }
+    }
+
+    Ok(())
+}
 
 #[handler]
 pub async fn auth_local_register(

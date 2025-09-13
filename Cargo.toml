@@ -12,11 +12,7 @@ migration = { path = "migration" }
 core-server = { path = "core-server" }
 async-trait = "0.1.89"
 regex = "1.11.2"
-salvo = { version = "0.83.0", features = [
-    "affix-state",
-    "jwt-auth",
-    "logging",
-] }
+salvo = { version = "0.83.0", features = ["affix-state", "flash", "jwt-auth", "logging"] }
 sea-orm = { version = "1.1.15", features = ["macros", "sqlx-postgres"] }
 tokio = { version = "1", features = ["macros"] }
 tracing = "0.1"

@@ -1,6 +1,7 @@
 use crate::domain::exceptions::RepositoryError;
 use argon2::password_hash::Error as ArgonError;
-use std::num::{IntErrorKind, ParseIntError};
+use jsonwebtoken::errors::{Error as JWTError, ErrorKind as JWTErrorKind};
+use std::{fmt::format, num::{IntErrorKind, ParseIntError}};
 use thiserror::Error;
 
 #[derive(Debug, Error)]
@@ -42,6 +43,19 @@ impl From<ArgonError> for AppError {
         println!("Argo2 exception: {}", err);
         match err {
             _ => AppError::Unexpected(format!("Argon2 Error: failed to hash password. Err: {}", err.to_string())),
+        }
+    }
+}
+
+impl From<JWTError> for AppError {
+    fn from(error: JWTError) -> Self {
+        println!("JWT exception: {} ", error);
+        let error_kind = error.kind();
+
+        match error_kind {
+            JWTErrorKind::InvalidToken => AppError::Unexpected(format!("Invalid token: {}", error.to_string())),
+            JWTErrorKind::Json(msg) => AppError::Unexpected(format!("Invalid token: {}", msg.to_string())),
+            _ => AppError::Unexpected(format!(""))
         }
     }
 }

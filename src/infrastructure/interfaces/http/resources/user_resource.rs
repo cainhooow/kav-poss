@@ -10,6 +10,12 @@ pub struct UserRequest {
     pub password: String,
 }
 
+#[derive(Deserialize)]
+pub struct AuthRequest {
+    pub email: String,
+    pub password: String,
+}
+
 #[derive(Serialize, Deserialize)]
 pub struct UserResource {
     pub id: Option<i32>,
@@ -52,5 +58,15 @@ impl From<User> for UserResource {
 impl UserResource {
     pub fn collection(items: Vec<User>) -> Vec<Self> {
         items.into_iter().map(UserResource::from).collect()
+    }
+}
+
+impl UserAuthResource {
+    pub fn new(user: User, access_token: String, refresh_token: String) -> Self {
+        Self {
+            user: user.into(),
+            access_token,
+            refresh_token,
+        }
     }
 }

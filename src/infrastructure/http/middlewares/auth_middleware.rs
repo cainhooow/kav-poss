@@ -1,7 +1,7 @@
-use salvo::prelude::*;
-use std::sync::Arc;
-
 use crate::infrastructure::{http::State, interfaces::http::resources::DataResponse};
+use salvo::prelude::*;
+use std::env;
+use std::sync::Arc;
 pub struct AuthMiddleware;
 
 #[async_trait::async_trait]
@@ -15,14 +15,20 @@ impl Handler for AuthMiddleware {
     ) {
         if let Some(auth_header) = req.headers().get("Authorization") {
             let state = depot.obtain::<Arc<State>>().unwrap();
-            let token = auth_header.to_str().unwrap_or("").replace("Bearer", "");
+            let auth_header = auth_header.to_str().unwrap_or("");
 
-            match state.auth_service.validate_token(&token) {
-                Ok(claims) => {
-                    depot.insert("user_id", claims.sub);
-                    ctrl.call_next(req, depot, res).await;
-                }
-                Err(_) => {
+            match state.auth_service.validate_from_authorization(auth_header) {
+                Ok(auth) => match state.auth_service.validate_token(auth.token) {
+                    Ok(claims) => {
+                        depot.insert("user_id", claims.sub);
+                        ctrl.call_next(req, depot, res).await;
+                    }
+                    Err(_) => {
+                        res.render(Json(DataResponse::error("Invalid access token")));
+                        res.status_code(StatusCode::UNAUTHORIZED);
+                    }
+                },
+                Err(err) => {
                     res.render(Json(DataResponse::error("Invalid access token")));
                     res.status_code(StatusCode::UNAUTHORIZED);
                 }
