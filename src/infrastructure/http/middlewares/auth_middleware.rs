@@ -24,7 +24,7 @@ impl Handler for AuthMiddleware {
                         ctrl.call_next(req, depot, res).await;
                     }
                     Err(_) => {
-                        res.render(Json(DataResponse::error("Invalid access token")));
+                        res.render(DataResponse::error("Invalid access token"));
                         res.status_code(StatusCode::UNAUTHORIZED);
                     }
                 },

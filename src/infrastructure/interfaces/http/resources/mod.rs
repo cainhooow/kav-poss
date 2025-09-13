@@ -1,3 +1,4 @@
+use salvo::{http::{header::CONTENT_TYPE, HeaderMap, HeaderValue, StatusError}, writing::Json};
 use serde::Serialize;
 
 pub mod product_resource;
@@ -21,6 +22,26 @@ impl<T> DataResponse<T> {
         DataResponse {
             success: false,
             data,
+        }
+    }
+}
+
+impl<T> salvo::Scribe for DataResponse<T> 
+where T: Serialize + Send,
+{
+    fn render(self, res: &mut salvo::Response) {
+        match serde_json::to_vec(&self) {
+            Ok(bytes) => {
+                let mut headers_map = HeaderMap::new();
+                headers_map.insert(CONTENT_TYPE, HeaderValue::from_static("application/json"));
+                res.set_headers(headers_map);
+
+                let _ = res.write_body(bytes);
+            },
+            Err(err) => {
+                println!("{err}");
+                res.render(StatusError::internal_server_error());
+            }
         }
     }
 }
