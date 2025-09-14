@@ -1,8 +1,9 @@
 use std::sync::Arc;
 
-use argon2::{Argon2, PasswordHash, password_hash::PasswordVerifier};
+use argon2::{Argon2, PasswordHash, PasswordVerifier};
 use core_server::RoleEnum;
-use salvo::{flash::FlashDepotExt, http::{HeaderMap, HeaderValue}, prelude::*};
+use salvo::prelude::*;
+use time::{Duration, OffsetDateTime};
 
 use crate::{
     application::{
@@ -37,28 +38,36 @@ pub async fn auth_local_login(
                 .await
             {
                 Ok(user) => {
+                    let state = depot.obtain::<Arc<State>>().unwrap();
+
                     let argon2 = Argon2::default();
                     let password_hash = PasswordHash::new(&user.password)?;
                     argon2.verify_password(req.password.as_bytes(), &password_hash)?;
                     let tokens = state.auth_service.generate(user.id.unwrap())?;
 
-                    res.render(Json(DataResponse::success(UserAuthResource::new(
+                    let _ = state.cookie_service.generate_sessions(
+                        &tokens.access_token,
+                        &tokens.refresh_token,
+                        res,
+                    );
+
+                    res.render(DataResponse::success(UserAuthResource::new(
                         user,
                         tokens.access_token,
                         tokens.refresh_token,
-                    ))))
+                    )))
                 }
                 Err(_) => {
                     res.status_code(StatusCode::UNAUTHORIZED);
-                    res.render(Json(DataResponse::error(String::from(
+                    res.render(DataResponse::error(String::from(
                         "Invalid user email/username or password",
-                    ))))
+                    )))
                 }
             }
         }
         Err(err) => {
             res.status_code(StatusCode::BAD_REQUEST);
-            res.render(Json(DataResponse::error(err.to_string())))
+            res.render(DataResponse::error(err.to_string()))
         }
     }
 
@@ -83,23 +92,23 @@ pub async fn auth_local_register(
                     req.name,
                     req.email,
                     &req.password,
-                    vec![RoleEnum::CanCreateBussines],
+                    vec![RoleEnum::CanAuthenticate],
                 )
                 .await
             {
                 Ok(data) => {
                     res.status_code(StatusCode::CREATED);
-                    res.render(Json(DataResponse::success(UserResource::from(&data))));
+                    res.render(DataResponse::success(UserResource::from(&data)));
                 }
                 Err(err) => {
                     res.status_code(StatusCode::INTERNAL_SERVER_ERROR);
-                    res.render(Json(DataResponse::error(err.to_string())));
+                    res.render(DataResponse::error(err.to_string()));
                 }
             }
         }
         Err(err) => {
             res.status_code(StatusCode::BAD_REQUEST);
-            res.render(Json(DataResponse::error(err.to_string())))
+            res.render(DataResponse::error(err.to_string()))
         }
     }
 

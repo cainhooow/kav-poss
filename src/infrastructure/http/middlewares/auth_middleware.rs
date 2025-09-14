@@ -28,7 +28,7 @@ impl Handler for AuthMiddleware {
                         res.status_code(StatusCode::UNAUTHORIZED);
                     }
                 },
-                Err(err) => {
+                Err(_) => {
                     res.render(DataResponse::error("Invalid access token"));
                     res.status_code(StatusCode::UNAUTHORIZED);
                 }
