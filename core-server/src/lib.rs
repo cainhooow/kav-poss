@@ -1,5 +1,7 @@
 use serde::{Deserialize, Serialize};
+#[allow(unused_imports)]
 use std::str::FromStr;
+#[allow(unused_imports)]
 use strum::IntoEnumIterator;
 use strum_macros::{Display, EnumIter, EnumString};
 
