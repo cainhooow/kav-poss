@@ -64,3 +64,18 @@ e um `JWT_AUTH_SECRET`
    ```sh
    sea-orm-cli migrate up
    ```
+
+## Configurações opcionais
+
+1. Banco de dados dev postgres para local
+   - Consulte `dockerfiles/postgres`
+
+   ```sh
+   # Entrar no diretorio
+   cd dockerfiles/postgres
+
+   # Build da imagem
+   docker build . -t kav-db
+   ```
+
+   O postgres já esta configurado com o usuário, senha e schema
