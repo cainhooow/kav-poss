@@ -6,7 +6,8 @@ use salvo::prelude::*;
 
 use crate::{
     application::{
-        exceptions::AppResult, queries::user_query::FindUserByEmailQuery,
+        exceptions::AppResult,
+        queries::user_query::{FindUserByEmailQuery, FindUserByIdQuery},
         usecases::user_usecases::CreateUserWithRolesUseCase,
     },
     infrastructure::{
@@ -34,6 +35,40 @@ fn refresh_token(state: Arc<State>, refresh_token: &str, res: &mut Response) -> 
         access_token: new_token,
     }));
     res.status_code(StatusCode::OK);
+    Ok(())
+}
+
+#[handler]
+pub async fn auth_user(
+    _req: &mut Request,
+    res: &mut Response,
+    depot: &mut Depot,
+) -> AppResult<()> {
+    let state = depot.obtain::<Arc<State>>().unwrap().to_owned();
+    let user_repository = SeaOrmUserRepository::new(state.db.clone());
+
+    match depot.get::<i32>("user_id") {
+        Ok(user_id) => {
+            match FindUserByIdQuery::new(user_repository)
+                .execute(*user_id)
+                .await
+            {
+                Ok(user) => {
+                    res.render(DataResponse::success(UserResource::from(&user)));
+                    res.status_code(StatusCode::OK);
+                }
+                Err(err) => {
+                    res.render(DataResponse::error(err.to_string()));
+                    res.status_code(StatusCode::UNAUTHORIZED);
+                }
+            }
+        }
+        Err(_) => {
+            res.render(DataResponse::error("No Auth user"));
+            res.status_code(StatusCode::UNAUTHORIZED);
+        }
+    }
+
     Ok(())
 }
 

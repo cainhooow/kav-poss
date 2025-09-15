@@ -18,6 +18,18 @@ impl From<UserModel> for User {
     }
 }
 
+impl From<&UserModel> for User {
+    fn from(value: &UserModel) -> Self {
+        Self {
+            id: Some(value.id),
+            name: value.name.clone(),
+            email: value.email.clone(),
+            password: value.password.clone(),
+            roles: vec![],
+        }
+    }
+}
+
 impl UserMapper {
     pub fn with_roles(mut user: User, roles: Vec<RoleEnum>) -> User {
         user.roles = roles;

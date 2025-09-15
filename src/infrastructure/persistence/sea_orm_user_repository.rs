@@ -11,7 +11,7 @@ use crate::{
 use core_server::RoleEnum;
 use sea_orm::{
     ActiveModelTrait, ActiveValue::Set, ColumnTrait, DatabaseConnection, EntityTrait, ModelTrait,
-    QueryFilter,
+    QueryFilter, QuerySelect,
 };
 
 use crate::infrastructure::entities::{role, user};
@@ -43,20 +43,22 @@ impl UserRepository for SeaOrmUserRepository {
     }
 
     async fn find_by_id(&self, id: i32) -> Result<User, RepositoryError> {
-        let user = user::Entity::find_by_id(id).one(&*self.conn).await?;
+        let user = user::Entity::find_by_id(id)
+            .find_with_related(role::Entity)
+            .all(&*self.conn)
+            .await?;
 
-        if let Some(user) = user {
-            let roles = user
-                .find_related(role::Entity)
-                .all(&*self.conn)
-                .await?
-                .into_iter()
-                .map(|r| RoleEnum::from_str(&r.name).unwrap())
-                .collect::<Vec<RoleEnum>>();
+        match user.first() {
+            Some(data) => {
+                let (user, roles) = data;
+                let roles: Vec<RoleEnum> = roles
+                    .into_iter()
+                    .map(|r| RoleEnum::from_str(&r.name).unwrap())
+                    .collect();
 
-            Ok(UserMapper::with_roles(User::from(user), roles))
-        } else {
-            Err(RepositoryError::NotFound)
+                Ok(UserMapper::with_roles(User::from(user), roles))
+            }
+            None => Err(RepositoryError::NotFound),
         }
     }
 
