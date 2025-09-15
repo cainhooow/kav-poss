@@ -30,17 +30,17 @@ pub async fn create_product_handler(depot: &mut Depot, req: &mut Request, res: &
             {
                 Ok(data) => {
                     res.status_code(StatusCode::CREATED);
-                    res.render(Json(DataResponse::success(ProductResource::from(&data))));
+                    res.render(DataResponse::success(ProductResource::from(&data)));
                 }
                 Err(err) => {
                     res.status_code(StatusCode::INTERNAL_SERVER_ERROR);
-                    res.render(Json(DataResponse::error(err.to_string())));
+                    res.render(DataResponse::error(err.to_string()));
                 }
             }
         }
         Err(err) => {
             res.status_code(StatusCode::BAD_REQUEST);
-            res.render(Json(DataResponse::error(err.to_string())))
+            res.render(DataResponse::error(err.to_string()))
         }
     }
 }
@@ -51,12 +51,12 @@ pub async fn index_product_handler(depot: &mut Depot, res: &mut Response) {
     let repository = SeaOrmProductRepository::new(state.db.clone());
 
     match FindAllProductsQuery::new(repository).execute().await {
-        Ok(data) => res.render(Json(DataResponse::success(ProductResource::collection(
+        Ok(data) => res.render(DataResponse::success(ProductResource::collection(
             data,
-        )))),
+        ))),
         Err(err) => {
             res.status_code(StatusCode::INTERNAL_SERVER_ERROR);
-            res.render(Json(DataResponse::error(err.to_string())));
+            res.render(DataResponse::error(err.to_string()));
         }
     }
 }
@@ -75,11 +75,11 @@ pub async fn get_product_by_id_handler(
     match FindProductByIdQuery::new(repository).execute(id).await {
         Ok(data) => {
             res.status_code(StatusCode::OK);
-            res.render(Json(DataResponse::success(ProductResource::from(&data))));
+            res.render(DataResponse::success(ProductResource::from(&data)));
         }
         Err(err) => {
             res.status_code(StatusCode::INTERNAL_SERVER_ERROR);
-            res.render(Json(DataResponse::error(err.to_string())));
+            res.render(DataResponse::error(err.to_string()));
         }
     };
 
