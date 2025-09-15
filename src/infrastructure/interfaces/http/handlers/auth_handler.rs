@@ -23,6 +23,20 @@ use crate::{
     },
 };
 
+fn refresh_token(state: Arc<State>, refresh_token: &str, res: &mut Response) -> AppResult<()> {
+    let new_token = state.auth_service.refresh_access_token(refresh_token)?;
+    state
+        .cookie_service
+        .generate_sessions(&new_token, refresh_token, res);
+
+    res.render(DataResponse::success(AuthRefreshResource {
+        refresh_token: refresh_token.to_string(),
+        access_token: new_token,
+    }));
+    res.status_code(StatusCode::OK);
+    Ok(())
+}
+
 #[handler]
 pub async fn auth_local_refresh(
     req: &mut Request,
@@ -32,23 +46,17 @@ pub async fn auth_local_refresh(
     let state = depot.obtain::<Arc<State>>().unwrap().to_owned();
 
     if let Some(cookie) = req.cookie("kvrefresh") {
-    } else if let Ok(auth_header) = req.parse_json::<RefreshTokenRequest>().await {
-        let new_token = state
-            .auth_service
-            .refresh_access_token(&auth_header.refresh_token)?;
-
-        state
-            .cookie_service
-            .generate_sessions(&new_token, &auth_header.refresh_token, res);
-
-        res.status_code(StatusCode::OK);
-        res.render(DataResponse::success(AuthRefreshResource {
-            refresh_token: auth_header.refresh_token,
-            access_token: new_token,
-        }));
+        refresh_token(state, cookie.value(), res)?;
     } else {
-        res.status_code(StatusCode::UNAUTHORIZED);
-        res.render(DataResponse::error("Refresh token absent or expired"))
+        match req.parse_json::<RefreshTokenRequest>().await {
+            Ok(auth_body) => {
+                refresh_token(state, &auth_body.refresh_token, res)?;
+            }
+            Err(err) => {
+                res.render(DataResponse::error(err.to_string()));
+                res.status_code(StatusCode::BAD_REQUEST);
+            }
+        }
     }
 
     Ok(())

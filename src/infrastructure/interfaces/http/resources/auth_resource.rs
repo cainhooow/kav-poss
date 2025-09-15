@@ -19,7 +19,7 @@ pub struct AuthResource {
 
 #[derive(Deserialize)]
 pub struct RefreshTokenRequest {
-    #[serde(rename(deserialize = "refresh_token"))]
+    #[serde(rename(deserialize = "refreshToken"))]
     pub refresh_token: String,
 }
 
