@@ -1,4 +1,7 @@
-use salvo::{http::{header::CONTENT_TYPE, HeaderMap, HeaderValue, StatusError}, writing::Json};
+use salvo::{
+    http::{HeaderMap, HeaderValue, StatusError, header::CONTENT_TYPE},
+    writing::Json,
+};
 use serde::Serialize;
 
 pub mod product_resource;
@@ -26,8 +29,9 @@ impl<T> DataResponse<T> {
     }
 }
 
-impl<T> salvo::Scribe for DataResponse<T> 
-where T: Serialize + Send,
+impl<T> salvo::Scribe for DataResponse<T>
+where
+    T: Serialize + Send,
 {
     fn render(self, res: &mut salvo::Response) {
         match serde_json::to_vec(&self) {
@@ -37,7 +41,7 @@ where T: Serialize + Send,
                 res.set_headers(headers_map);
 
                 let _ = res.write_body(bytes);
-            },
+            }
             Err(err) => {
                 println!("{err}");
                 res.render(StatusError::internal_server_error());

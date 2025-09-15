@@ -23,7 +23,7 @@ impl Related<super::role::Entity> for Entity {
     fn to() -> RelationDef {
         super::user_roles_pivot::Relation::Role.def()
     }
-    
+
     fn via() -> Option<RelationDef> {
         Some(super::user_roles_pivot::Relation::Role.def().rev())
     }

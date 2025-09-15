@@ -29,12 +29,7 @@ impl CookieService {
         cookie
     }
 
-    pub fn generate_sessions(
-        &self,
-        access_token: &str,
-        refresh_token: &str,
-        res: &mut Response,
-    ) {
+    pub fn generate_sessions(&self, access_token: &str, refresh_token: &str, res: &mut Response) {
         let access_cookie = self.session_cookie(
             "kvsession",
             access_token,

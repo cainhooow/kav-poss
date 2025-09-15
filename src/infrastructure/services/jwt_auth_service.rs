@@ -97,7 +97,7 @@ impl JwtAuthService {
         if !token_type.eq("Bearer") || token_type.is_empty() {
             return Err(AppError::Unexpected(format!(
                 "Invalid authorization type in header"
-            )))
+            )));
         }
 
         let token = parts[1];

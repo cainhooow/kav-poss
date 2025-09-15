@@ -1,8 +1,8 @@
 use std::{env, sync::Arc};
 pub mod middlewares;
 
-use salvo::prelude::*;
 use salvo::flash;
+use salvo::prelude::*;
 use sea_orm::DatabaseConnection;
 
 #[derive(Default, Clone, Debug)]
@@ -25,7 +25,7 @@ async fn create_state() -> Arc<State> {
     Arc::new(State {
         db: Arc::new(connection),
         auth_service: Arc::new(JwtAuthService::new(jwt_secret)),
-        cookie_service: Arc::new(CookieService::new())
+        cookie_service: Arc::new(CookieService::new()),
     })
 }
 

@@ -6,6 +6,6 @@ pub async fn estabilish_connection() -> DatabaseConnection {
     let database_url = env::var("DATABASE_URL").expect("DATABASE_URL NOT PROVIDED");
 
     Database::connect(&database_url)
-    .await
-    .expect("Failed to connect database")
+        .await
+        .expect("Failed to connect database")
 }

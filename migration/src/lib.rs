@@ -5,7 +5,6 @@ mod m20250904_212116_create_roles_table;
 mod m20250904_212334_create_user_roles_pivot_table;
 mod m20250909_005702_inser_roles_tables;
 
-
 pub struct Migrator;
 
 #[async_trait::async_trait]
@@ -20,4 +19,3 @@ impl MigratorTrait for Migrator {
         ]
     }
 }
-

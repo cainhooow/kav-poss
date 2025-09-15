@@ -3,9 +3,9 @@ use std::sync::Arc;
 
 use crate::{
     application::{
-        usecases::product_usecases::CreateProductUseCase,
         exceptions::AppResult,
         queries::product_query::{FindAllProductsQuery, FindProductByIdQuery},
+        usecases::product_usecases::CreateProductUseCase,
     },
     infrastructure::{
         http::State,

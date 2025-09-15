@@ -33,11 +33,7 @@ impl MigrationTrait for Migration {
                             .not_null()
                             .primary_key(),
                     )
-                    .col(
-                        ColumnDef::new(UserRolesPivot::UserId)
-                            .integer()
-                            .not_null(),
-                    )
+                    .col(ColumnDef::new(UserRolesPivot::UserId).integer().not_null())
                     .foreign_key(&mut users_fk)
                     .foreign_key(&mut roles_fk)
                     .to_owned(),
