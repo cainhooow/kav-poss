@@ -2,7 +2,7 @@
 
 Kav é um sistema(back-end) de ponto de venda em desenvolvimento. É um sistema local ou baseado na web projetado para fornecer uma interface de vendas para pequenas (ou grandes) empresas
 
-## Por quê Rust?
+## Por que Rust?
 
 Uma base do projeto foi desenvolvida usando `tauri`, com isso, para manter uma stack continua foi tomada a decisão de usar a linguagem rust. O kav-poss tem como objetivo de futuramente ser um sistema maior, usado na web ou em servidores locais.
 
