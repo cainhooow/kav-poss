@@ -96,7 +96,7 @@ impl JwtAuthService {
         let token_type = parts[0];
         if !token_type.eq("Bearer") || token_type.is_empty() {
             return Err(AppError::Unexpected(format!(
-                "Invalid token type in header"
+                "Invalid authorization type in header"
             )))
         }
 
@@ -112,7 +112,7 @@ impl JwtAuthService {
         let claims = self.validate_token(refresh_token)?;
 
         if claims.typ != "refresh" {
-            return Err("Invalid type".into());
+            return Err("Invalid token type".into());
         }
 
         self.generate_access_token(claims.sub)
