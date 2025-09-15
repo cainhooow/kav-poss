@@ -13,7 +13,8 @@ use crate::{
         http::State,
         interfaces::http::resources::{
             DataResponse,
-            user_resource::{AuthRequest, UserAuthResource, UserRequest, UserResource},
+            auth_resource::{AuthRefreshResource, AuthRequest, AuthResource, RefreshTokenRequest},
+            user_resource::{UserRequest, UserResource},
         },
         persistence::{
             sea_orm_role_repository::SeaOrmRoleRepository,
@@ -23,22 +24,53 @@ use crate::{
 };
 
 #[handler]
+pub async fn auth_local_refresh(
+    req: &mut Request,
+    res: &mut Response,
+    depot: &mut Depot,
+) -> AppResult<()> {
+    let state = depot.obtain::<Arc<State>>().unwrap().to_owned();
+
+    if let Some(cookie) = req.cookie("kvrefresh") {
+    } else if let Ok(auth_header) = req.parse_json::<RefreshTokenRequest>().await {
+        let new_token = state
+            .auth_service
+            .refresh_access_token(&auth_header.refresh_token)?;
+
+        state
+            .cookie_service
+            .generate_sessions(&new_token, &auth_header.refresh_token, res);
+
+        res.status_code(StatusCode::OK);
+        res.render(DataResponse::success(AuthRefreshResource {
+            refresh_token: auth_header.refresh_token,
+            access_token: new_token,
+        }));
+    } else {
+        res.status_code(StatusCode::UNAUTHORIZED);
+        res.render(DataResponse::error("Refresh token absent or expired"))
+    }
+
+    Ok(())
+}
+
+#[handler]
 pub async fn auth_local_login(
     req: &mut Request,
     res: &mut Response,
     depot: &mut Depot,
 ) -> AppResult<()> {
     let state = depot.obtain::<Arc<State>>().unwrap().to_owned();
+
     match req.parse_json::<AuthRequest>().await {
         Ok(req) => {
             let user_respository = SeaOrmUserRepository::new(state.db.clone());
+
             match FindUserByEmailQuery::new(user_respository)
                 .execute(req.email)
                 .await
             {
                 Ok(user) => {
-                    let state = depot.obtain::<Arc<State>>().unwrap();
-
                     let argon2 = Argon2::default();
                     let password_hash = PasswordHash::new(&user.password)?;
                     argon2.verify_password(req.password.as_bytes(), &password_hash)?;
@@ -50,7 +82,7 @@ pub async fn auth_local_login(
                         res,
                     );
 
-                    res.render(DataResponse::success(UserAuthResource::new(
+                    res.render(DataResponse::success(AuthResource::new(
                         user,
                         tokens.access_token,
                         tokens.refresh_token,

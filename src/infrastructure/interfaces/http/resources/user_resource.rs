@@ -10,11 +10,6 @@ pub struct UserRequest {
     pub password: String,
 }
 
-#[derive(Deserialize)]
-pub struct AuthRequest {
-    pub email: String,
-    pub password: String,
-}
 
 #[derive(Serialize, Deserialize)]
 pub struct UserResource {
@@ -22,15 +17,6 @@ pub struct UserResource {
     pub name: String,
     pub email: String,
     pub roles: Vec<RoleEnum>,
-}
-
-#[derive(Serialize, Deserialize)]
-pub struct UserAuthResource {
-    pub user: UserResource,
-    #[serde(rename(serialize = "accessToken"))]
-    pub access_token: String,
-    #[serde(rename(serialize = "refreshToken"))]
-    pub refresh_token: String,
 }
 
 impl From<&User> for UserResource {
@@ -58,15 +44,5 @@ impl From<User> for UserResource {
 impl UserResource {
     pub fn collection(items: Vec<User>) -> Vec<Self> {
         items.into_iter().map(UserResource::from).collect()
-    }
-}
-
-impl UserAuthResource {
-    pub fn new(user: User, access_token: String, refresh_token: String) -> Self {
-        Self {
-            user: user.into(),
-            access_token,
-            refresh_token,
-        }
     }
 }

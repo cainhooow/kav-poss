@@ -19,6 +19,12 @@ pub enum AppError {
 
 pub type AppResult<T> = Result<T, AppError>;
 
+impl From<String> for AppError {
+    fn from(value: String) -> Self {
+        AppError::Unexpected(value)
+    }
+}
+
 impl From<RepositoryError> for AppError {
     fn from(err: RepositoryError) -> Self {
         match err {

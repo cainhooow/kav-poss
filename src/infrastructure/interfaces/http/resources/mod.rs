@@ -1,11 +1,12 @@
+pub mod auth_resource;
+pub mod product_resource;
+pub mod user_resource;
+
 use salvo::{
     http::{HeaderMap, HeaderValue, StatusError, header::CONTENT_TYPE},
     writing::Json,
 };
 use serde::Serialize;
-
-pub mod product_resource;
-pub mod user_resource;
 
 #[derive(Serialize)]
 pub struct DataResponse<T> {
