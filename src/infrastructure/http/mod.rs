@@ -12,6 +12,7 @@ pub struct State {
     pub cookie_service: Arc<CookieService>,
 }
 
+use crate::infrastructure::http::middlewares::app_middleware::AppMiddleware;
 use crate::infrastructure::services::cookie_service::CookieService;
 use crate::infrastructure::{
     database::estabilish_connection, interfaces::http::routers::routers,
@@ -33,6 +34,8 @@ fn create_router(state: Arc<State>) -> Router {
     Router::with_path("api")
         .hoop(flash::CookieStore::new().into_handler())
         .hoop(affix_state::inject(state))
+        .hoop(Logger::new())
+        .hoop(AppMiddleware)
         .push(routers())
 }
 
