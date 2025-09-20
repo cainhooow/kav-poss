@@ -3,9 +3,8 @@ pub mod product_resource;
 pub mod user_resource;
 
 use salvo::{
-    http::{HeaderMap, HeaderValue, StatusError, header::CONTENT_TYPE},
-    writing::Json,
-};
+    http::{HeaderMap, HeaderValue, StatusError, header::CONTENT_TYPE}};
+
 use serde::Serialize;
 
 #[derive(Serialize)]
