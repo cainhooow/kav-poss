@@ -25,9 +25,9 @@ pub struct RefreshTokenRequest {
 
 #[derive(Serialize)]
 pub struct AuthRefreshResource {
-    #[serde(rename(serialize="accessToken"))]
+    #[serde(rename(serialize = "accessToken"))]
     pub access_token: String,
-    #[serde(rename(serialize="refreshToken"))]
+    #[serde(rename(serialize = "refreshToken"))]
     pub refresh_token: String,
 }
 

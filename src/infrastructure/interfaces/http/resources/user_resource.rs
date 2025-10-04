@@ -10,7 +10,6 @@ pub struct UserRequest {
     pub password: String,
 }
 
-
 #[derive(Serialize, Deserialize)]
 pub struct UserResource {
     pub id: Option<i32>,

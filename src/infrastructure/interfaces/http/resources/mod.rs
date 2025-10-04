@@ -2,8 +2,7 @@ pub mod auth_resource;
 pub mod product_resource;
 pub mod user_resource;
 
-use salvo::{
-    http::{HeaderMap, HeaderValue, StatusError, header::CONTENT_TYPE}};
+use salvo::http::{HeaderMap, HeaderValue, StatusError, header::CONTENT_TYPE};
 
 use serde::Serialize;
 

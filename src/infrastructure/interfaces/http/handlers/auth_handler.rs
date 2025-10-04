@@ -39,11 +39,7 @@ fn refresh_token(state: Arc<State>, refresh_token: &str, res: &mut Response) -> 
 }
 
 #[handler]
-pub async fn auth_user(
-    _req: &mut Request,
-    res: &mut Response,
-    depot: &mut Depot,
-) -> AppResult<()> {
+pub async fn auth_user(_req: &mut Request, res: &mut Response, depot: &mut Depot) -> AppResult<()> {
     let state = depot.obtain::<Arc<State>>().unwrap().to_owned();
     let user_repository = SeaOrmUserRepository::new(state.db.clone());
 

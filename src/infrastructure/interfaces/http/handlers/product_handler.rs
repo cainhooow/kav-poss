@@ -51,9 +51,7 @@ pub async fn index_product_handler(depot: &mut Depot, res: &mut Response) {
     let repository = SeaOrmProductRepository::new(state.db.clone());
 
     match FindAllProductsQuery::new(repository).execute().await {
-        Ok(data) => res.render(DataResponse::success(ProductResource::collection(
-            data,
-        ))),
+        Ok(data) => res.render(DataResponse::success(ProductResource::collection(data))),
         Err(err) => {
             res.status_code(StatusCode::INTERNAL_SERVER_ERROR);
             res.render(DataResponse::error(err.to_string()));
