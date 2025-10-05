@@ -1,10 +1,13 @@
 use super::user_resource::UserResource;
 use crate::domain::entities::user::User;
+use garde::Validate;
 use serde::{Deserialize, Serialize};
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Validate)]
 pub struct AuthRequest {
+    #[garde(email)]
     pub email: String,
+    #[garde(ascii, length(min = 5))]
     pub password: String,
 }
 

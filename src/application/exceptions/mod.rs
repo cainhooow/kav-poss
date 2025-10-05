@@ -75,3 +75,10 @@ impl From<JWTError> for AppError {
         }
     }
 }
+
+impl From<garde::Report> for AppError {
+    fn from(report: garde::Report) -> Self {
+        let message = report.to_string();
+        AppError::Domain(message)
+    }
+}

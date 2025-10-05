@@ -2,6 +2,7 @@ use std::sync::Arc;
 
 use argon2::{Argon2, PasswordHash, PasswordVerifier};
 use core_server::RoleEnum;
+use garde::Validate;
 use salvo::prelude::*;
 
 use crate::{
@@ -154,9 +155,10 @@ pub async fn auth_local_register(
 
     match req.parse_json::<UserRequest>().await {
         Ok(req) => {
+            req.validate()?;
             let user_repository = SeaOrmUserRepository::new(state.db.clone());
             let role_repository = SeaOrmRoleRepository::new(state.db.clone());
-
+            
             match CreateUserWithRolesUseCase::new(user_repository, role_repository)
                 .execute(
                     req.name,

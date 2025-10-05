@@ -28,3 +28,4 @@ jsonwebtoken = { version = "9.3.1" }
 strum = "0.27.2"
 strum_macros = "0.27.2"
 serde_json = "1.0.145"
+garde = { version = "0.22.0", features = ["credit-card", "serde", "phone-number", "email", "full"] }

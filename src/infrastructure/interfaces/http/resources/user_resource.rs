@@ -1,12 +1,15 @@
+use crate::domain::entities::user::User;
 use core_server::RoleEnum;
+use garde::{Valid, Validate};
 use serde::{Deserialize, Serialize};
 
-use crate::domain::entities::user::User;
-
-#[derive(Deserialize)]
+#[derive(Deserialize, Validate)]
 pub struct UserRequest {
+    #[garde(ascii, length(min = 3, max = 50))]
     pub name: String,
+    #[garde(email, length(min = 3))]
     pub email: String,
+    #[garde(ascii, length(min = 5))]
     pub password: String,
 }
 
