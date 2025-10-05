@@ -35,7 +35,7 @@ impl JwtAuthService {
         Self { secret }
     }
 
-    fn generate_token(&self, user_id: i32, claims: JwtClaims) -> Result<String, Error> {
+    fn generate_token(&self, claims: JwtClaims) -> Result<String, Error> {
         let token = jsonwebtoken::encode(
             &jsonwebtoken::Header::default(),
             &claims,
@@ -62,7 +62,7 @@ impl JwtAuthService {
             typ: String::from("access"),
         };
 
-        let token = self.generate_token(user_id, claims)?;
+        let token = self.generate_token(claims)?;
         Ok(token)
     }
 
@@ -73,7 +73,7 @@ impl JwtAuthService {
             typ: String::from("refresh"),
         };
 
-        let token = self.generate_token(user_id, claims)?;
+        let token = self.generate_token(claims)?;
         Ok(token)
     }
 
