@@ -1,10 +1,7 @@
 use crate::domain::exceptions::RepositoryError;
 use argon2::password_hash::Error as ArgonError;
 use jsonwebtoken::errors::{Error as JWTError, ErrorKind as JWTErrorKind};
-use std::{
-    fmt::format,
-    num::{IntErrorKind, ParseIntError},
-};
+use std::num::{IntErrorKind, ParseIntError};
 use thiserror::Error;
 
 #[derive(Debug, Error)]
