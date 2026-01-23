@@ -9,7 +9,7 @@ pub struct Model {
     pub id: i32,
     pub name: String,
     pub description: Option<String>,
-    pub price: Decimal,
+    pub price: i32,
     #[sea_orm(unique)]
     pub sku: String,
 }

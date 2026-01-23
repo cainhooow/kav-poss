@@ -33,7 +33,7 @@ impl ProductRepository for SeaOrmProductRepository {
     async fn save(&self, product: &NewProduct) -> Result<Product, RepositoryError> {
         let model = ProductModel::ActiveModel {
             name: Set(product.name.clone()),
-            price: Set(Decimal::from_f64(product.price).unwrap()),
+            price: Set(product.price),
             sku: Set(product.sku.clone()),
             ..Default::default()
         };

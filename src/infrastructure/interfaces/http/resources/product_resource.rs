@@ -7,7 +7,7 @@ pub struct ProductResource {
     pub id: Option<i32>,
     pub name: String,
     pub description: Option<String>,
-    pub price: f64,
+    pub price: i32,
     pub sku: String,
 }
 
@@ -17,7 +17,7 @@ impl From<&Product> for ProductResource {
             id: value.id,
             name: value.name.clone(),
             description: value.description.clone(),
-            price: value.price.to_f64().unwrap(),
+            price: value.price,
             sku: value.sku.clone(),
         }
     }
@@ -29,7 +29,7 @@ impl From<Product> for ProductResource {
             id: value.id,
             name: value.name,
             description: value.description,
-            price: value.price.to_f64().unwrap(),
+            price: value.price,
             sku: value.sku,
         }
     }

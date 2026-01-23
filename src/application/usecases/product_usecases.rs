@@ -18,7 +18,7 @@ impl<R: ProductRepository> CreateProductUseCase<R> {
     pub async fn execute(
         &self,
         name: String,
-        price: f64,
+        price: i32,
         sku: String,
         description: Option<String>,
     ) -> AppResult<Product> {

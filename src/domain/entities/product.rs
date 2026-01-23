@@ -3,14 +3,14 @@ pub struct Product {
     pub id: Option<i32>,
     pub name: String,
     pub description: Option<String>,
-    pub price: f64,
+    pub price: i32,
     pub sku: String,
 }
 
 pub struct ProductBuilder {
     name: String,
     description: Option<String>,
-    price: f64,
+    price: i32,
     sku: String,
 }
 
@@ -18,12 +18,12 @@ pub struct ProductBuilder {
 pub struct NewProduct {
     pub name: String,
     pub description: Option<String>,
-    pub price: f64,
+    pub price: i32,
     pub sku: String,
 }
 
 impl ProductBuilder {
-    pub fn new(name: impl Into<String>, price: f64, sku: impl Into<String>) -> Self {
+    pub fn new(name: impl Into<String>, price: i32, sku: impl Into<String>) -> Self {
         Self {
             name: name.into(),
             description: None,
@@ -42,7 +42,7 @@ impl ProductBuilder {
         self
     }
 
-    pub fn price(mut self, price: f64) -> Self {
+    pub fn price(mut self, price: i32) -> Self {
         self.price = price;
         self
     }

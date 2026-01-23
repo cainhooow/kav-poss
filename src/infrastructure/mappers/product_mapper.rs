@@ -10,7 +10,7 @@ impl From<ProductModel> for Product {
             id: Some(value.id),
             name: value.name,
             description: value.description,
-            price: value.price.to_f64().unwrap(),
+            price: value.price,
             sku: value.sku,
         }
     }
