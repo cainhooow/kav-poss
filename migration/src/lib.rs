@@ -4,6 +4,7 @@ mod m20250904_211710_create_users_table;
 mod m20250904_212116_create_roles_table;
 mod m20250904_212334_create_user_roles_pivot_table;
 mod m20250909_005702_inser_roles_tables;
+mod m20260123_222500_create_companies;
 
 pub struct Migrator;
 
@@ -14,8 +15,10 @@ impl MigratorTrait for Migrator {
             Box::new(m20250903_200616_create_products_table::Migration),
             Box::new(m20250904_211710_create_users_table::Migration),
             Box::new(m20250904_212116_create_roles_table::Migration),
-            Box::new(m20250909_005702_inser_roles_tables::Migration),
             Box::new(m20250904_212334_create_user_roles_pivot_table::Migration),
+            Box::new(m20250909_005702_inser_roles_tables::Migration),
+            Box::new(m20260123_222500_create_companies::Migration),
         ]
     }
 }
+
