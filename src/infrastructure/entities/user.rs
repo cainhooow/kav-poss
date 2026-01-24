@@ -18,7 +18,7 @@ pub enum Relation {
     #[sea_orm(has_one = "super::company::Entity")]
     Company,
     #[sea_orm(has_many = "super::user_roles_pivot::Entity")]
-    UserRolesPivot
+    UserRolesPivot,
 }
 
 impl Related<super::company::Entity> for Entity {

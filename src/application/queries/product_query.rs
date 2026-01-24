@@ -21,7 +21,7 @@ impl<R: ProductRepository> FindProductByIdQuery<R> {
 }
 
 pub struct FindAllProductsQuery<R: ProductRepository> {
-    repository: R,  
+    repository: R,
 }
 
 impl<R: ProductRepository> FindAllProductsQuery<R> {

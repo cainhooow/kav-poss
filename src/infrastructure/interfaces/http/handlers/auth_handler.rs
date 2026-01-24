@@ -158,7 +158,7 @@ pub async fn auth_local_register(
             req.validate()?;
             let user_repository = SeaOrmUserRepository::new(state.db.clone());
             let role_repository = SeaOrmRoleRepository::new(state.db.clone());
-            
+
             match CreateUserWithRolesUseCase::new(user_repository, role_repository)
                 .execute(
                     req.name,

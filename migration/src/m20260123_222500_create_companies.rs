@@ -11,10 +11,10 @@ impl MigrationTrait for Migration {
         // Replace the sample below with your own migration scripts
 
         let mut user_fk = ForeignKey::create()
-        .from(Company::Table, Company::Id)
-        .to(User::Table, User::Id)
-        .on_delete(ForeignKeyAction::Cascade)
-        .to_owned();
+            .from(Company::Table, Company::Id)
+            .to(User::Table, User::Id)
+            .on_delete(ForeignKeyAction::Cascade)
+            .to_owned();
 
         manager
             .create_table(
@@ -29,7 +29,7 @@ impl MigrationTrait for Migration {
             )
             .await
     }
- 
+
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         // Replace the sample below with your own migration scripts
         manager
