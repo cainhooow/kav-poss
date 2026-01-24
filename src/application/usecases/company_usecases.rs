@@ -2,7 +2,7 @@ use crate::{
     application::exceptions::AppResult,
     domain::{
         builders::company_builder::CompanyBuilder, entities::company::Company,
-        repositories::company_repository::CompanyRepository,
+        repositories::company_repository_interface::CompanyRepository,
     },
 };
 

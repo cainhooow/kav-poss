@@ -1,6 +1,6 @@
 use crate::{
     application::exceptions::AppResult,
-    domain::{entities::company::Company, repositories::company_repository::CompanyRepository},
+    domain::{entities::company::Company, repositories::company_repository_interface::CompanyRepository},
 };
 
 pub struct FindCompanyById<R: CompanyRepository> {

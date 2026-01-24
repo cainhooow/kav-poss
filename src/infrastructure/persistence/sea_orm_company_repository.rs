@@ -5,7 +5,7 @@ use sea_orm::DatabaseConnection;
 use crate::domain::{
     entities::company::{Company, NewCompany},
     exceptions::RepositoryError,
-    repositories::company_repository::CompanyRepository,
+    repositories::company_repository_interface::CompanyRepository,
 };
 
 pub struct SeaOrmCompanyRepository {
