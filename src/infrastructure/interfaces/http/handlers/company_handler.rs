@@ -1,6 +1,7 @@
 use std::sync::Arc;
 
 use core_server::RoleEnum;
+use garde::Validate;
 use salvo::{Depot, Request, Response, handler, http::StatusCode};
 
 use crate::{
@@ -11,7 +12,10 @@ use crate::{
     },
     infrastructure::{
         http::State,
-        interfaces::http::resources::{DataResponse, company_resource::CompanyResource},
+        interfaces::http::resources::{
+            DataResponse,
+            company_resource::{CompanyRequest, CompanyResource},
+        },
         persistence::{
             sea_orm_company_repository::SeaOrmCompanyRepository,
             sea_orm_user_repository::SeaOrmUserRepository,
@@ -27,7 +31,7 @@ pub async fn create_company_handler(
 ) -> AppResult<()> {
     let state = depot.obtain::<Arc<State>>().unwrap().to_owned();
 
-    match _req.parse_json::<CompanyResource>().await {
+    match _req.parse_json::<CompanyRequest>().await {
         Ok(data) => {
             let repository = SeaOrmCompanyRepository::new(state.db.clone());
             let user_repository = SeaOrmUserRepository::new(state.db.clone());
@@ -35,7 +39,6 @@ pub async fn create_company_handler(
             let user_id = depot
                 .get::<i32>("user_id")
                 .map_err(|_| AppError::Unauthorized(String::from("Usuário não autenticado")))?;
-
             let user = FindUserByIdQuery::new(user_repository)
                 .execute(*user_id)
                 .await?;
@@ -47,6 +50,9 @@ pub async fn create_company_handler(
                 ));
                 return Ok(());
             }
+
+            data.validate()
+                .map_err(|err| AppError::Bad(err.to_string()))?;
 
             match CreateCompanyUseCase::new(repository)
                 .execute(data.name, *user_id)

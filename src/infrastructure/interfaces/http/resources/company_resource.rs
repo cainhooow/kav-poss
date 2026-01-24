@@ -1,4 +1,4 @@
-use garde::Validate;
+use garde::{Valid, Validate};
 use serde::{Deserialize, Serialize};
 
 use crate::domain::entities::company::Company;
