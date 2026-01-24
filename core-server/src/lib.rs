@@ -5,7 +5,7 @@ use std::str::FromStr;
 use strum::IntoEnumIterator;
 use strum_macros::{Display, EnumIter, EnumString};
 
-#[derive(Debug, Clone, EnumString, EnumIter, Display, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, EnumString, EnumIter, Display, Serialize, Deserialize)]
 pub enum RoleEnum {
     CanAuthenticate,
     CanCreateUser,
