@@ -1,4 +1,7 @@
-use crate::domain::{entities::company::{Company, NewCompany}, exceptions::RepositoryError};
+use crate::domain::{
+    entities::company::{Company, NewCompany},
+    exceptions::RepositoryError,
+};
 
 #[async_trait::async_trait]
 pub trait CompanyRepository: Send + Sync {
