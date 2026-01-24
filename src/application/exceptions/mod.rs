@@ -12,6 +12,10 @@ pub enum AppError {
     Repository(String),
     #[error("Unexpected error: {0}")]
     Unexpected(String),
+    #[error("Http Unauthorized: {0} ")]
+    Unauthorized(String),
+    #[error("Http Forbidden: {0}")]
+    Forbidden(String),
 }
 
 pub type AppResult<T> = Result<T, AppError>;
