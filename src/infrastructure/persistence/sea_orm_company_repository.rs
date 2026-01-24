@@ -6,7 +6,7 @@ use crate::{
     },
     infrastructure::entities::company::{self as CompanyModel, Entity as CompanyEntity},
 };
-use sea_orm::{ActiveModelTrait, ActiveValue::Set, DatabaseConnection};
+use sea_orm::{ActiveModelTrait, ActiveValue::Set, DatabaseConnection, EntityTrait};
 use std::sync::Arc;
 
 pub struct SeaOrmCompanyRepository {
@@ -35,11 +35,16 @@ impl CompanyRepository for SeaOrmCompanyRepository {
     }
 
     async fn find_by_id(&self, id: i32) -> Result<Company, RepositoryError> {
-        Ok(Company {
-            id: Some(id),
-            name: String::from("Company"),
-            user_id: 15,
-        })
+        match CompanyEntity::find_by_id(id).one(&*self.conn).await {
+            Ok(data) => {
+                if let Some(company) = data {
+                    Ok(Company::from(company))
+                } else {
+                    Err(RepositoryError::NotFound)
+                }
+            }
+            Err(err) => Err(RepositoryError::Generic(err.to_string()))
+        }
     }
 
     async fn find_by_user_id(&self, user_id: i32) -> Result<Company, RepositoryError> {
