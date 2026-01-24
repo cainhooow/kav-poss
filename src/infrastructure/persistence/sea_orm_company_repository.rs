@@ -4,9 +4,12 @@ use crate::{
         exceptions::RepositoryError,
         repositories::company_repository_interface::CompanyRepository,
     },
+    infrastructure::entities::company,
     infrastructure::entities::company::{self as CompanyModel, Entity as CompanyEntity},
 };
-use sea_orm::{ActiveModelTrait, ActiveValue::Set, DatabaseConnection, EntityTrait};
+use sea_orm::{
+    ActiveModelTrait, ActiveValue::Set, ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter,
+};
 use std::sync::Arc;
 
 pub struct SeaOrmCompanyRepository {
@@ -43,15 +46,24 @@ impl CompanyRepository for SeaOrmCompanyRepository {
                     Err(RepositoryError::NotFound)
                 }
             }
-            Err(err) => Err(RepositoryError::Generic(err.to_string()))
+            Err(err) => Err(RepositoryError::Generic(err.to_string())),
         }
     }
 
     async fn find_by_user_id(&self, user_id: i32) -> Result<Company, RepositoryError> {
-        Ok(Company {
-            id: Some(21),
-            name: String::from("Company"),
-            user_id,
-        })
+        match CompanyEntity::find()
+            .filter(company::Column::UserId.eq(user_id))
+            .one(&*self.conn)
+            .await
+        {
+            Ok(data) => {
+                if let Some(company) = data {
+                    Ok(Company::from(company))
+                } else {
+                    Err(RepositoryError::NotFound)
+                }
+            }
+            Err(err) => Err(RepositoryError::Generic(err.to_string())),
+        }
     }
 }
