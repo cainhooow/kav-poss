@@ -16,6 +16,7 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(Product::Name).string().not_null())
                     .col(ColumnDef::new(Product::Description).string().null())
                     .col(ColumnDef::new(Product::Price).integer().not_null())
+                    .col(ColumnDef::new(Product::Barcode).string().null())
                     .col(
                         ColumnDef::new(Product::Sku)
                             .string()
@@ -44,4 +45,5 @@ enum Product {
     Description,
     Price,
     Sku,
+    Barcode,
 }
