@@ -17,7 +17,7 @@ pub enum AppError {
     #[error("Http Forbidden: {0}")]
     Forbidden(String),
     #[error("Http Bad: {0}")]
-    Bad(String)
+    Bad(String),
 }
 
 pub type AppResult<T> = Result<T, AppError>;

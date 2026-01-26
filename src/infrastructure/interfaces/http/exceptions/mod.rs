@@ -13,7 +13,7 @@ impl Writer for AppError {
             AppError::Unexpected(msg) => (StatusCode::INTERNAL_SERVER_ERROR, msg.clone()),
             AppError::Forbidden(msg) => (StatusCode::FORBIDDEN, msg.clone()),
             AppError::Unauthorized(msg) => (StatusCode::UNAUTHORIZED, msg.clone()),
-            AppError::Bad(msg) => (StatusCode::BAD_REQUEST, msg.clone())
+            AppError::Bad(msg) => (StatusCode::BAD_REQUEST, msg.clone()),
         };
 
         res.status_code(status);
