@@ -1,3 +1,4 @@
 pub mod company_usecases;
+pub mod plan_usecases;
 pub mod product_usecases;
 pub mod user_usecases;
