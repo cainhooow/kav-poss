@@ -28,4 +28,14 @@ impl Related<super::user::Entity> for Entity {
     }
 }
 
+impl Related<super::plan::Entity> for Entity {
+    fn to() -> RelationDef {
+        super::plan_feature_pivot::Relation::Plan.def()
+    }
+
+    fn via() -> Option<RelationDef> {
+        Some(super::plan_feature_pivot::Relation::Plan.def().rev())
+    }
+}
+
 impl ActiveModelBehavior for ActiveModel {}

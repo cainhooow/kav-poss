@@ -19,9 +19,13 @@ pub enum Relation {
     PlanFeaturePivot,
 }
 
-impl Related<super::plan_feature_pivot::Entity> for Entity {
+impl Related<super::plan::Entity> for Entity {
     fn to() -> RelationDef {
-        Relation::PlanFeaturePivot.def()
+        super::plan_feature_pivot::Relation::Role.def()
+    }
+
+    fn via() -> Option<RelationDef> {
+        Some(super::plan_feature_pivot::Relation::Plan.def().rev())
     }
 }
 
