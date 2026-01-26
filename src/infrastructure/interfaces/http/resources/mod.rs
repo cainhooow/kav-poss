@@ -1,5 +1,6 @@
 pub mod auth_resource;
 pub mod company_resource;
+pub mod plan_resource;
 pub mod product_resource;
 pub mod user_resource;
 

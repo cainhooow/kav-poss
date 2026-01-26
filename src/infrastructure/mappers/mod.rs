@@ -1,4 +1,5 @@
 pub mod company_mapper;
+pub mod plan_mapper;
 pub mod product_mapper;
 pub mod role_mapper;
 pub mod user_mapper;
