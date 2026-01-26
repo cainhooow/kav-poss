@@ -3,6 +3,8 @@
 pub mod prelude;
 
 pub mod company;
+pub mod plan;
+pub mod plan_feature_pivot;
 pub mod product;
 pub mod role;
 pub mod user;
