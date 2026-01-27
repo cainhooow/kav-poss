@@ -84,4 +84,12 @@ impl RoleRepository for SeaOrmRoleRepository {
 
         Ok(())
     }
+
+    async fn assign_flags_to_plan(
+        &self,
+        flags: Vec<RoleEnum>,
+        plan_id: i32,
+    ) -> Result<(), RepositoryError> {
+        Ok(())
+    }
 }

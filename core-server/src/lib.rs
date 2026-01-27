@@ -7,11 +7,8 @@ use strum_macros::{Display, EnumIter, EnumString};
 
 #[derive(Debug, Clone, PartialEq, EnumString, EnumIter, Display, Serialize, Deserialize)]
 pub enum RoleEnum {
+    /** USER PERMISSION */
     CanAuthenticate,
-    CanCreateUser,
-    CanUpdateUser,
-    CanDeleteUser,
-    CanAssignUserRole,
     CanCreateSalePoint,
     CanUpdateSalePoint,
     CanModifySalePoint,
@@ -22,4 +19,12 @@ pub enum RoleEnum {
     CanCreateProduct,
     CanUpdateProduct,
     CanDeleteProduct,
+    /** SYS PERMISSION */
+    CanCreateUser,
+    CanUpdateUser,
+    CanDeleteUser,
+    CanAssignUserRole,
+    CanCreateApiPlan,
+    CanModifyApiPlan,
+    CanAssignApiPlan,
 }

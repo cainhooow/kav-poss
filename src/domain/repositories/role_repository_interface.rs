@@ -18,4 +18,9 @@ pub trait RoleRepository: Send + Sync {
         roles: Vec<RoleEnum>,
         user_id: i32,
     ) -> Result<(), RepositoryError>;
+    async fn assign_flags_to_plan(
+        &self,
+        flags: Vec<RoleEnum>,
+        plan_id: i32
+    ) -> Result<(), RepositoryError>;
 }
