@@ -42,6 +42,19 @@ impl UserRepository for SeaOrmUserRepository {
         }
     }
 
+    async fn find_first(&self) -> Result<User, RepositoryError> {
+        match user::Entity::find().limit(1).one(&*self.conn).await {
+            Ok(data) => {
+                if let Some(data) = data {
+                    Ok(User::from(data))
+                } else {
+                    Err(RepositoryError::NotFound)
+                }
+            }
+            Err(err) => Err(RepositoryError::Generic(err.to_string())),
+        }
+    }
+
     async fn find_by_id(&self, id: i32) -> Result<User, RepositoryError> {
         let user = user::Entity::find_by_id(id)
             .find_with_related(role::Entity)

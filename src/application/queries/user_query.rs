@@ -7,10 +7,6 @@ pub struct FindUserByEmailQuery<R: UserRepository> {
     repository: R,
 }
 
-pub struct FindUserByIdQuery<R: UserRepository> {
-    repository: R,
-}
-
 impl<R: UserRepository> FindUserByEmailQuery<R> {
     pub fn new(repo: R) -> Self {
         Self { repository: repo }
@@ -22,6 +18,10 @@ impl<R: UserRepository> FindUserByEmailQuery<R> {
     }
 }
 
+pub struct FindUserByIdQuery<R: UserRepository> {
+    repository: R,
+}
+
 impl<R: UserRepository> FindUserByIdQuery<R> {
     pub fn new(repo: R) -> Self {
         Self { repository: repo }
@@ -29,6 +29,21 @@ impl<R: UserRepository> FindUserByIdQuery<R> {
 
     pub async fn execute(&self, id: i32) -> AppResult<User> {
         let user = self.repository.find_by_id(id).await?;
+        Ok(user)
+    }
+}
+
+pub struct FindFirstQuery<R: UserRepository> {
+    repository: R,
+}
+
+impl<R: UserRepository> FindFirstQuery<R> {
+    pub fn new(repo: R) -> Self {
+        Self { repository: repo }
+    }
+
+    pub async fn execute(&self) -> AppResult<User> {
+        let user = self.repository.find_by_id(1).await?;
         Ok(user)
     }
 }
