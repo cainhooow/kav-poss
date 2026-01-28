@@ -1,4 +1,7 @@
-use crate::domain::{entities::plan::{NewPlan, Plan}, exceptions::RepositoryError};
+use crate::domain::{
+    entities::plan::{NewPlan, Plan},
+    exceptions::RepositoryError,
+};
 
 #[async_trait::async_trait]
 pub trait PlanRepository: Send + Sync {
