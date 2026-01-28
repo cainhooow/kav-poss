@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use sea_orm::DatabaseConnection;
+use sea_orm::{ActiveModelTrait, ActiveValue::Set, DatabaseConnection, EntityTrait, QueryFilter};
 
 use crate::{
     domain::{
@@ -24,20 +24,28 @@ impl SeaOrmPlanRepository {
 #[async_trait::async_trait]
 impl PlanRepository for SeaOrmPlanRepository {
     async fn save(&self, plan: &NewPlan) -> Result<Plan, RepositoryError> {
-        Ok(Plan {
-            id: Some(1),
-            name: String::from(""),
-            description: Some(String::from("")),
-            price: 100,
-        })
+        let model = plan::ActiveModel {
+            name: Set(plan.name.clone()),
+            price: Set(plan.price.clone()),
+            ..Default::default()
+        };
+
+        match model.insert(&*self.conn).await {
+            Ok(data) => Ok(Plan::from(data)),
+            Err(err) => Err(RepositoryError::Generic(err.to_string())),
+        }
     }
 
-    async fn find_by_id(&self, id: i32) -> Result<Plan, RepositoryError> {
-        Ok(Plan {
-            id: Some(1),
-            name: String::from(""),
-            description: Some(String::from("")),
-            price: 100,
-        })
+    async fn find_by_id(&self, plan_id: i32) -> Result<Plan, RepositoryError> {
+        match plan::Entity::find_by_id(plan_id).one(&*self.conn).await {
+            Ok(data) => {
+                if let Some(plan) = data {
+                    Ok(Plan::from(plan))
+                } else {
+                    Err(RepositoryError::NotFound)
+                }
+            }
+            Err(err) => Err(RepositoryError::Generic(err.to_string())),
+        }
     }
 }

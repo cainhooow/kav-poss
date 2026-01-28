@@ -6,5 +6,5 @@ use crate::domain::{
 #[async_trait::async_trait]
 pub trait PlanRepository: Send + Sync {
     async fn save(&self, plan: &NewPlan) -> Result<Plan, RepositoryError>;
-    async fn find_by_id(&self, id: i32) -> Result<Plan, RepositoryError>;
+    async fn find_by_id(&self, plan_id: i32) -> Result<Plan, RepositoryError>;
 }
