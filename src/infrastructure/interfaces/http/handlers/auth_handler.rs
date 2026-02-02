@@ -40,7 +40,7 @@ fn refresh_token(state: Arc<State>, refresh_token: &str, res: &mut Response) -> 
 }
 
 #[handler]
-pub async fn auth_user(_req: &mut Request, res: &mut Response, depot: &mut Depot) -> AppResult<()> {
+pub async fn auth_user_handler(_req: &mut Request, res: &mut Response, depot: &mut Depot) -> AppResult<()> {
     let state = depot.obtain::<Arc<State>>().unwrap().to_owned();
     let user_repository = SeaOrmUserRepository::new(state.db.clone());
 
@@ -70,7 +70,7 @@ pub async fn auth_user(_req: &mut Request, res: &mut Response, depot: &mut Depot
 }
 
 #[handler]
-pub async fn auth_local_refresh(
+pub async fn auth_local_refresh_handler(
     req: &mut Request,
     res: &mut Response,
     depot: &mut Depot,
@@ -95,7 +95,7 @@ pub async fn auth_local_refresh(
 }
 
 #[handler]
-pub async fn auth_local_login(
+pub async fn auth_local_login_handler(
     req: &mut Request,
     res: &mut Response,
     depot: &mut Depot,
@@ -146,7 +146,7 @@ pub async fn auth_local_login(
 }
 
 #[handler]
-pub async fn auth_local_register(
+pub async fn auth_local_register_handler(
     req: &mut Request,
     res: &mut Response,
     depot: &mut Depot,
