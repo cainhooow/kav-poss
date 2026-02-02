@@ -55,3 +55,9 @@ pub async fn create_api_plan_handler(
 
     Ok(())
 }
+
+#[handler]
+pub async fn update_api_plan_handler() {}
+
+#[handler]
+pub async fn delete_api_plan_handler() {}

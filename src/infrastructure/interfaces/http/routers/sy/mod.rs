@@ -1,5 +1,4 @@
 use salvo::Router;
-
 pub mod plans;
 
 pub fn router() -> Router {
