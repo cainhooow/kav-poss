@@ -19,7 +19,7 @@ use crate::{
 };
 
 #[handler]
-pub async fn create_api_plan_handler(
+pub async fn create_plan_handler(
     depot: &mut Depot,
     req: &mut Request,
     res: &mut Response,
@@ -57,7 +57,13 @@ pub async fn create_api_plan_handler(
 }
 
 #[handler]
-pub async fn update_api_plan_handler() {}
+pub async fn update_plan_handler() {}
 
 #[handler]
-pub async fn delete_api_plan_handler() {}
+pub async fn delete_plan_handler() {}
+
+#[handler]
+pub async fn plan_feature_handler() {}
+
+#[handler]
+pub async fn create_plan_feature_handler() {}
