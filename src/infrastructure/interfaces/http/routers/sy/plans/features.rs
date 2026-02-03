@@ -1,6 +1,5 @@
 use salvo::Router;
 
-
 pub fn router() -> Router {
-    Router::with_path("features")
+    Router::with_path("{plan_id}/features")
 }
