@@ -1,4 +1,5 @@
 pub use salvo::prelude::*;
+
 pub mod auth;
 pub mod me;
 pub mod product;

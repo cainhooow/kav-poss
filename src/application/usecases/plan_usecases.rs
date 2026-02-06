@@ -1,9 +1,6 @@
 use crate::{
     application::exceptions::AppResult,
-    domain::{
-        builders::plan_builder::PlanBuilder, entities::plan::Plan,
-        repositories::plan_repository_interface::PlanRepository,
-    },
+    domain::{entities::plan::{Plan, PlanBuilder}, repositories::plan_repository_interface::PlanRepository},
 };
 
 pub struct CreatePlanUseCase<R: PlanRepository> {

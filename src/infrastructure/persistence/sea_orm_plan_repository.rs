@@ -27,6 +27,7 @@ impl PlanRepository for SeaOrmPlanRepository {
         let model = plan::ActiveModel {
             name: Set(plan.name.clone()),
             price: Set(plan.price.clone()),
+            description: Set(plan.description.clone()),
             ..Default::default()
         };
 

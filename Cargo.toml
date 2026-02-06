@@ -11,8 +11,8 @@ members = [".", "core-server", "migration"]
 migration = { path = "migration" }
 core-server = { path = "core-server" }
 async-trait = "0.1.89"
-regex = "1.12.2"
-salvo = { version = "0.88.1", features = ["affix-state", "flash", "jwt-auth", "logging"] }
+regex = "1.12.3"
+salvo = { version = "0.89.1", features = ["affix-state", "flash", "jwt-auth", "logging"] }
 sea-orm = { version = "1.1.19", features = ["macros", "sqlx-postgres"] }
 tokio = { version = "1.49.0", features = ["macros"] }
 tracing = "0.1.44"
@@ -23,8 +23,8 @@ thiserror = "2.0.18"
 rust_decimal = "1.40.0"
 crypto = { version = "0.5.1", features = ["password-hash"] }
 argon2 = "0.5.3"
-time = "0.3.45"
-jsonwebtoken = { version = "10.2.0" }
+time = "0.3.47"
+jsonwebtoken = { version = "10.3.0" }
 strum = "0.27.2"
 strum_macros = "0.27.2"
 serde_json = "1.0.149"
