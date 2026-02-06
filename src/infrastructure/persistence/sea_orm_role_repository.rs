@@ -10,6 +10,7 @@ use crate::domain::{
     repositories::role_repository_interface::RoleRepository,
 };
 
+use crate::infrastructure::entities::plan_feature_pivot;
 use crate::infrastructure::entities::role;
 use crate::infrastructure::entities::user_roles_pivot;
 
@@ -90,6 +91,17 @@ impl RoleRepository for SeaOrmRoleRepository {
         flags: Vec<RoleEnum>,
         plan_id: i32,
     ) -> Result<(), RepositoryError> {
+        let flags = self.select_roles(flags).await?;
+
+        for flag in flags {
+            let model = plan_feature_pivot::ActiveModel {
+                feature_id: Set(flag.id),
+                plan_id: Set(plan_id),
+            };
+
+            model.insert(&*self.conn).await?;
+        }
+
         Ok(())
     }
 }
