@@ -1,6 +1,8 @@
 use std::sync::Arc;
 
-use sea_orm::{ActiveModelTrait, ActiveValue::Set, DatabaseConnection, EntityTrait, QueryFilter};
+use sea_orm::{
+    ActiveModelTrait, ActiveValue::Set, DatabaseConnection, EntityTrait, ModelTrait, QueryFilter,
+};
 
 use crate::{
     domain::{
@@ -8,7 +10,7 @@ use crate::{
         exceptions::RepositoryError,
         repositories::plan_repository_interface::PlanRepository,
     },
-    infrastructure::entities::plan,
+    infrastructure::entities::{plan, role},
 };
 
 pub struct SeaOrmPlanRepository {
@@ -42,6 +44,25 @@ impl PlanRepository for SeaOrmPlanRepository {
             Ok(data) => {
                 if let Some(plan) = data {
                     Ok(Plan::from(plan))
+                } else {
+                    Err(RepositoryError::NotFound)
+                }
+            }
+            Err(err) => Err(RepositoryError::Generic(err.to_string())),
+        }
+    }
+
+    async fn get_features(&self, plan_id: i32) -> Result<Vec<String>, RepositoryError> {
+        match plan::Entity::find_by_id(plan_id).one(&*self.conn).await {
+            Ok(data) => {
+                if let Some(plan) = data {
+                    let features = plan.find_related(role::Entity).all(&*self.conn).await?;
+                    let features_names = features
+                        .into_iter()
+                        .map(|f| f.name)
+                        .collect::<Vec<String>>();
+
+                    Ok(features_names)
                 } else {
                     Err(RepositoryError::NotFound)
                 }
