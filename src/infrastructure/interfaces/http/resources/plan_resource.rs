@@ -1,3 +1,4 @@
+use core_server::RoleEnum;
 use garde::{Valid, Validate};
 use serde::{Deserialize, Serialize};
 
@@ -11,6 +12,8 @@ pub struct PlanRequest {
     pub price: i32,
     #[garde(ascii, length(min = 5, max = 1000), required)]
     pub description: Option<String>,
+    #[garde(required)]
+    pub features: Option<Vec<RoleEnum>>,
 }
 
 #[derive(Serialize, Deserialize)]

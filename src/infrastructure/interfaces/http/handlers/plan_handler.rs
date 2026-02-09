@@ -15,7 +15,10 @@ use crate::{
             DataResponse,
             plan_resource::{PlanRequest, PlanResource},
         },
-        persistence::sea_orm_plan_repository::SeaOrmPlanRepository,
+        persistence::{
+            sea_orm_plan_repository::SeaOrmPlanRepository,
+            sea_orm_role_repository::SeaOrmRoleRepository,
+        },
     },
 };
 
@@ -30,12 +33,13 @@ pub async fn create_plan_handler(
     match req.parse_json::<PlanRequest>().await {
         Ok(data) => {
             let repository = SeaOrmPlanRepository::new(state.db.clone());
+            let role_repository = SeaOrmRoleRepository::new(state.db.clone());
 
             data.validate()
                 .map_err(|err| AppError::Bad(err.to_string()))?;
 
-            match CreatePlanUseCase::new(repository)
-                .execute(data.name, data.price, data.description)
+            match CreatePlanUseCase::new(repository, role_repository)
+                .execute(data.name, data.price, data.description, data.features)
                 .await
             {
                 Ok(data) => {
