@@ -39,7 +39,7 @@ impl MigrationTrait for Migration {
 }
 
 #[derive(DeriveIden)]
-enum Company {
+pub enum Company {
     Table,
     Id,
     UserId,

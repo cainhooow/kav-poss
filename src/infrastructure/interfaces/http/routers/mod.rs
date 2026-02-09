@@ -1,6 +1,7 @@
 pub use salvo::prelude::*;
 
 pub mod auth;
+pub mod company;
 pub mod me;
 pub mod product;
 pub mod sy;
