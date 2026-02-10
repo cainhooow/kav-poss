@@ -7,16 +7,14 @@ pub struct Migration;
 impl MigrationTrait for Migration {
     async fn up(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         // Replace the sample below with your own migration scripts
-        todo!();
 
         manager
             .create_table(
                 Table::create()
-                    .table("post")
-                    .if_not_exists()
-                    .col(pk_auto("id"))
-                    .col(string("title"))
-                    .col(string("text"))
+                    .table(CompanyRole::Table)
+                    .col(pk_auto(CompanyRole::Id))
+                    .col(ColumnDef::new(CompanyRole::Name).string().not_null())
+                    .col(ColumnDef::new(CompanyRole::Description).string())
                     .to_owned(),
             )
             .await
@@ -24,10 +22,16 @@ impl MigrationTrait for Migration {
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         // Replace the sample below with your own migration scripts
-        todo!();
-
         manager
-            .drop_table(Table::drop().table("post").to_owned())
+            .drop_table(Table::drop().table(CompanyRole::Table).to_owned())
             .await
     }
+}
+
+#[derive(DeriveIden)]
+pub enum CompanyRole {
+    Id,
+    Table,
+    Name,
+    Description,
 }

@@ -9,6 +9,7 @@ mod m20260125_002042_create_plans_table;
 mod m20260125_005629_create_plan_features_pivot_table;
 mod m20260209_133913_create_company_roles_table;
 mod m20260209_133932_create_company_colaborators_table;
+mod m20260210_135747_create_company_roles_pivot;
 
 pub struct Migrator;
 
@@ -26,6 +27,7 @@ impl MigratorTrait for Migrator {
             Box::new(m20260125_005629_create_plan_features_pivot_table::Migration),
             Box::new(m20260209_133913_create_company_roles_table::Migration),
             Box::new(m20260209_133932_create_company_colaborators_table::Migration),
+            Box::new(m20260210_135747_create_company_roles_pivot::Migration),
         ]
     }
 }
