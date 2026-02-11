@@ -104,4 +104,14 @@ impl RoleRepository for SeaOrmRoleRepository {
 
         Ok(())
     }
+
+    async fn assign_flags_to_company(
+        &self,
+        flags: Vec<RoleEnum>,
+        company_id: i32,
+    ) -> Result<(), RepositoryError> {
+        let flags = self.select_roles(flags).await?;
+
+        Ok(())
+    }
 }
