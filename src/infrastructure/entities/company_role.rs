@@ -9,17 +9,40 @@ pub struct Model {
     pub id: i32,
     pub name: String,
     pub description: Option<String>,
+    pub company_id: i32,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
     #[sea_orm(has_many = "super::colaborator_role_pivot::Entity")]
     ColaboratorRolePivot,
+    #[sea_orm(
+        belongs_to = "super::company::Entity",
+        from = "Column::CompanyId",
+        to = "super::company::Column::Id",
+        on_update = "NoAction",
+        on_delete = "Cascade"
+    )]
+    Company,
+    #[sea_orm(has_one = "super::company_role_pivot::Entity")]
+    CompanyRolePivot,
 }
 
 impl Related<super::colaborator_role_pivot::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::ColaboratorRolePivot.def()
+    }
+}
+
+impl Related<super::company::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::Company.def()
+    }
+}
+
+impl Related<super::company_role_pivot::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::CompanyRolePivot.def()
     }
 }
 

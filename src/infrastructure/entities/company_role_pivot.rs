@@ -6,20 +6,20 @@ use sea_orm::entity::prelude::*;
 #[sea_orm(table_name = "company_role_pivot")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    pub company_id: i32,
+    pub company_role_id: i32,
     pub flag_id: i32,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
     #[sea_orm(
-        belongs_to = "super::company::Entity",
-        from = "Column::CompanyId",
-        to = "super::company::Column::Id",
+        belongs_to = "super::company_role::Entity",
+        from = "Column::CompanyRoleId",
+        to = "super::company_role::Column::Id",
         on_update = "NoAction",
         on_delete = "Cascade"
     )]
-    Company,
+    CompanyRole,
     #[sea_orm(
         belongs_to = "super::role::Entity",
         from = "Column::FlagId",
@@ -30,9 +30,9 @@ pub enum Relation {
     Role,
 }
 
-impl Related<super::company::Entity> for Entity {
+impl Related<super::company_role::Entity> for Entity {
     fn to() -> RelationDef {
-        Relation::Company.def()
+        Relation::CompanyRole.def()
     }
 }
 
