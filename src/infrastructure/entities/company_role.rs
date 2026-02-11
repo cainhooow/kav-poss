@@ -28,9 +28,17 @@ pub enum Relation {
     CompanyRolePivot,
 }
 
-impl Related<super::colaborator_role_pivot::Entity> for Entity {
+impl Related<super::company_colaborator::Entity> for Entity {
     fn to() -> RelationDef {
-        Relation::ColaboratorRolePivot.def()
+        super::colaborator_role_pivot::Relation::CompanyColaborator.def()
+    }
+
+    fn via() -> Option<RelationDef> {
+        Some(
+            super::colaborator_role_pivot::Relation::CompanyRole
+                .def()
+                .rev(),
+        )
     }
 }
 
@@ -40,9 +48,13 @@ impl Related<super::company::Entity> for Entity {
     }
 }
 
-impl Related<super::company_role_pivot::Entity> for Entity {
+impl Related<super::company_role::Entity> for Entity {
     fn to() -> RelationDef {
-        Relation::CompanyRolePivot.def()
+        super::company_role_pivot::Relation::Role.def()
+    }
+
+    fn via() -> Option<RelationDef> {
+        Some(super::company_role_pivot::Relation::CompanyRole.def().rev())
     }
 }
 
