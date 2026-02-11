@@ -13,12 +13,15 @@ impl MigrationTrait for Migration {
     async fn up(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         // Replace the sample below with your own migration scripts
         let mut role_fk = ForeignKey::create()
-            .from(ColaboratorRole::Table, ColaboratorRole::RoleId)
+            .from(ColaboratorRolePivot::Table, ColaboratorRolePivot::RoleId)
             .to(CompanyRole::Table, CompanyRole::Id)
             .on_delete(ForeignKeyAction::Cascade)
             .to_owned();
         let mut colaborator_fk = ForeignKey::create()
-            .from(ColaboratorRole::Table, ColaboratorRole::ColaboratorId)
+            .from(
+                ColaboratorRolePivot::Table,
+                ColaboratorRolePivot::ColaboratorId,
+            )
             .to(CompanyColaborator::Table, CompanyColaborator::Id)
             .on_delete(ForeignKeyAction::Cascade)
             .to_owned();
@@ -26,9 +29,14 @@ impl MigrationTrait for Migration {
         manager
             .create_table(
                 Table::create()
-                    .table(ColaboratorRole::Table)
-                    .col(pk_auto(ColaboratorRole::ColaboratorId))
-                    .col(ColumnDef::new(ColaboratorRole::RoleId).integer().not_null())
+                    .table(ColaboratorRolePivot::Table)
+                    .if_not_exists()
+                    .col(pk_auto(ColaboratorRolePivot::ColaboratorId))
+                    .col(
+                        ColumnDef::new(ColaboratorRolePivot::RoleId)
+                            .integer()
+                            .not_null(),
+                    )
                     .foreign_key(&mut role_fk)
                     .foreign_key(&mut colaborator_fk)
                     .to_owned(),
@@ -39,13 +47,13 @@ impl MigrationTrait for Migration {
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         // Replace the sample below with your own migration scripts
         manager
-            .drop_table(Table::drop().table(ColaboratorRole::Table).to_owned())
+            .drop_table(Table::drop().table(ColaboratorRolePivot::Table).to_owned())
             .await
     }
 }
 
 #[derive(DeriveIden)]
-pub enum ColaboratorRole {
+pub enum ColaboratorRolePivot {
     Table,
     RoleId,
     ColaboratorId,

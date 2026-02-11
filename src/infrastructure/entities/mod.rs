@@ -2,7 +2,11 @@
 
 pub mod prelude;
 
+pub mod colaborator_role_pivot;
 pub mod company;
+pub mod company_colaborator;
+pub mod company_role;
+pub mod company_role_pivot;
 pub mod plan;
 pub mod plan_feature_pivot;
 pub mod product;

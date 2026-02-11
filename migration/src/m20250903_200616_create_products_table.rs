@@ -33,7 +33,7 @@ impl MigrationTrait for Migration {
                             .unique_key()
                             .not_null(),
                     )
-                    .foreign_key(&mut company_fk)
+                    // .foreign_key(&mut company_fk)
                     .to_owned(),
             )
             .await

@@ -12,6 +12,7 @@ impl MigrationTrait for Migration {
             .create_table(
                 Table::create()
                     .table(CompanyRole::Table)
+                    .if_not_exists()
                     .col(pk_auto(CompanyRole::Id))
                     .col(ColumnDef::new(CompanyRole::Name).string().not_null())
                     .col(ColumnDef::new(CompanyRole::Description).string())
