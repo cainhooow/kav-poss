@@ -56,4 +56,13 @@ impl ColaboratorBuilder {
         self.company_id = company_id;
         self
     }
+
+    pub fn build(self) -> NewColaborator {
+        NewColaborator {
+            company_id: self.company_id,
+            user_id: self.user_id,
+            document: self.document,
+            badge: self.badge,
+        }
+    }
 }

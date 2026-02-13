@@ -13,7 +13,7 @@ pub struct CompanyRoleBuilder {
 
 pub struct NewCompanyRole {
     pub name: String,
-    pub description: String,
+    pub description: Option<String>,
     pub company_id: i32,
 }
 
@@ -39,5 +39,13 @@ impl CompanyRoleBuilder {
     pub fn company(mut self, company_id: i32) -> Self {
         self.company_id = company_id;
         self
+    }
+
+    pub fn build(self) -> NewCompanyRole {
+        NewCompanyRole {
+            name: self.name,
+            description: self.description,
+            company_id: self.company_id,
+        }
     }
 }
