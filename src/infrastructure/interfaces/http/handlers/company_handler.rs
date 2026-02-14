@@ -50,13 +50,13 @@ pub async fn create_company_handler(
                 .execute(*user_id)
                 .await?;
 
-            if !user.roles.contains(&RoleEnum::CanCreateCompany) {
-                res.status_code(StatusCode::FORBIDDEN);
-                res.render(DataResponse::error(
-                    "Você não tem permissão para este recurso.",
-                ));
-                return Ok(());
-            }
+            // if !user.roles.contains(&RoleEnum::CanCreateCompany) {
+            //     res.status_code(StatusCode::FORBIDDEN);
+            //     res.render(DataResponse::error(
+            //         "Você não tem permissão para este recurso.",
+            //     ));
+            //     return Ok(());
+            // }
 
             data.validate()
                 .map_err(|err| AppError::Bad(err.to_string()))?;
@@ -142,6 +142,7 @@ pub async fn create_company_colaborator_handler(
     match req.parse_json::<ColaboratorRequest>().await {
         Ok(data) => {
             let repository = SeaOrmColaboratorRepository::new(state.db.clone());
+            let user_respository = SeaOrmUserRepository::new(state.db.clone());
 
             let company_id = req
                 .params()
@@ -152,6 +153,15 @@ pub async fn create_company_colaborator_handler(
 
             data.validate()
                 .map_err(|err| AppError::Bad(err.to_string()))?;
+
+            FindUserByIdQuery::new(user_respository)
+                .execute(data.user_id.unwrap())
+                .await
+                .map_err(|_| {
+                    AppError::Bad(String::from(
+                        "Usuário inválido ou não encontrado na nossa base de dados",
+                    ))
+                })?;
 
             match CreateColaboratorUseCase::new(repository)
                 .execute(
