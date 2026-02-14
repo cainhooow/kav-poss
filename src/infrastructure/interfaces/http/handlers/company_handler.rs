@@ -3,21 +3,28 @@ use std::sync::Arc;
 use core_server::RoleEnum;
 use garde::Validate;
 use salvo::{Depot, Request, Response, handler, http::StatusCode};
+use uuid::Uuid;
 
 use crate::{
     application::{
         exceptions::{AppError, AppResult},
         queries::user_query::FindUserByIdQuery,
-        usecases::company_usecases::CreateCompanyUseCase,
+        usecases::company_usecases::{
+            CreateColaboratorUseCase, CreateCompanyRoleUseCase, CreateCompanyUseCase,
+        },
     },
     infrastructure::{
         http::State,
         interfaces::http::resources::{
             DataResponse,
+            colaborator_resource::{ColaboratorRequest, ColaboratorResource},
             company_resource::{CompanyRequest, CompanyResource},
+            company_role_resource::{CompanyRoleRequest, CompanyRoleResource},
         },
         persistence::{
+            sea_orm_colaborator_repository::SeaOrmColaboratorRepository,
             sea_orm_company_repository::SeaOrmCompanyRepository,
+            sea_orm_company_role_repository::SeaOrmCompanyRoleRepository,
             sea_orm_user_repository::SeaOrmUserRepository,
         },
     },
@@ -75,4 +82,109 @@ pub async fn create_company_handler(
     }
 
     Ok(())
+}
+
+#[handler]
+pub async fn create_company_role_handler(
+    req: &mut Request,
+    res: &mut Response,
+    depot: &mut Depot,
+) -> AppResult<()> {
+    let state = depot.obtain::<Arc<State>>().unwrap().to_owned();
+
+    match req.parse_json::<CompanyRoleRequest>().await {
+        Ok(data) => {
+            let repository = SeaOrmCompanyRoleRepository::new(state.db.clone());
+            let company_id = req
+                .params()
+                .get("company_id")
+                .cloned()
+                .unwrap()
+                .parse::<i32>()?;
+
+            data.validate()
+                .map_err(|err| AppError::Bad(err.to_string()))?;
+
+            match CreateCompanyRoleUseCase::new(repository)
+                .execute(data.name, data.description, company_id)
+                .await
+            {
+                Ok(data) => {
+                    res.status_code(StatusCode::CREATED);
+                    res.render(DataResponse::success(CompanyRoleResource::from(data)));
+                }
+                Err(err) => {
+                    res.status_code(StatusCode::INTERNAL_SERVER_ERROR);
+                    res.render(DataResponse::error(err.to_string()));
+                }
+            }
+        }
+        Err(err) => {
+            res.status_code(StatusCode::BAD_REQUEST);
+            res.render(DataResponse::error(err.to_string()))
+        }
+    }
+
+    Ok(())
+}
+
+#[handler]
+pub async fn get_company_roles_handler(req: &mut Request, res: &mut Response, depot: &mut Depot) {}
+
+#[handler]
+pub async fn create_company_colaborator_handler(
+    req: &mut Request,
+    res: &mut Response,
+    depot: &mut Depot,
+) -> AppResult<()> {
+    let state = depot.obtain::<Arc<State>>().unwrap().to_owned();
+
+    match req.parse_json::<ColaboratorRequest>().await {
+        Ok(data) => {
+            let repository = SeaOrmColaboratorRepository::new(state.db.clone());
+
+            let company_id = req
+                .params()
+                .get("company_id")
+                .cloned()
+                .unwrap()
+                .parse::<i32>()?;
+
+            data.validate()
+                .map_err(|err| AppError::Bad(err.to_string()))?;
+
+            match CreateColaboratorUseCase::new(repository)
+                .execute(
+                    data.document,
+                    Uuid::new_v4().to_string(),
+                    company_id,
+                    data.user_id.unwrap(),
+                )
+                .await
+            {
+                Ok(data) => {
+                    res.status_code(StatusCode::CREATED);
+                    res.render(DataResponse::success(ColaboratorResource::from(data)));
+                }
+                Err(err) => {
+                    res.status_code(StatusCode::INTERNAL_SERVER_ERROR);
+                    res.render(DataResponse::error(err.to_string()));
+                }
+            }
+        }
+        Err(err) => {
+            res.status_code(StatusCode::BAD_REQUEST);
+            res.render(DataResponse::error(err.to_string()));
+        }
+    }
+
+    Ok(())
+}
+
+#[handler]
+pub async fn get_company_colaborators_handler(
+    req: &mut Request,
+    res: &mut Response,
+    depot: &mut Depot,
+) {
 }
