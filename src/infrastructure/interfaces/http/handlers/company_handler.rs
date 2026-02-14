@@ -8,7 +8,7 @@ use uuid::Uuid;
 use crate::{
     application::{
         exceptions::{AppError, AppResult},
-        queries::user_query::FindUserByIdQuery,
+        queries::{company_query::FindCompanyByIdQuery, user_query::FindUserByIdQuery},
         usecases::company_usecases::{
             CreateColaboratorUseCase, CreateCompanyRoleUseCase, CreateCompanyUseCase,
         },
@@ -142,6 +142,7 @@ pub async fn create_company_colaborator_handler(
     match req.parse_json::<ColaboratorRequest>().await {
         Ok(data) => {
             let repository = SeaOrmColaboratorRepository::new(state.db.clone());
+            let company_repository = SeaOrmCompanyRepository::new(state.db.clone());
             let user_respository = SeaOrmUserRepository::new(state.db.clone());
 
             let company_id = req
@@ -150,6 +151,15 @@ pub async fn create_company_colaborator_handler(
                 .cloned()
                 .unwrap()
                 .parse::<i32>()?;
+
+            FindCompanyByIdQuery::new(company_repository)
+                .execute(company_id)
+                .await
+                .map_err(|_| {
+                    AppError::Bad(String::from(
+                        "Compania invalida ou não encontrada na nossa base de dados",
+                    ))
+                })?;
 
             data.validate()
                 .map_err(|err| AppError::Bad(err.to_string()))?;

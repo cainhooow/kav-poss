@@ -5,11 +5,11 @@ use crate::{
     },
 };
 
-pub struct FindCompanyById<R: CompanyRepository> {
+pub struct FindCompanyByIdQuery<R: CompanyRepository> {
     repository: R,
 }
 
-impl<R: CompanyRepository> FindCompanyById<R> {
+impl<R: CompanyRepository> FindCompanyByIdQuery<R> {
     pub fn new(repo: R) -> Self {
         Self { repository: repo }
     }
