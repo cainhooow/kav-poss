@@ -12,4 +12,5 @@ pub fn routers() -> Router {
         .push(me::router())
         .push(product::router())
         .push(sy::router())
+        .push(company::router())
 }
