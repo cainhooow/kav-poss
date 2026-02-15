@@ -8,7 +8,12 @@ use uuid::Uuid;
 use crate::{
     application::{
         exceptions::{AppError, AppResult},
-        queries::{company_query::FindCompanyByIdQuery, user_query::FindUserByIdQuery},
+        queries::{
+            company_query::{
+                FindCompanyByIdQuery, GetCompanyColaboratorsQuery, GetCompanyRolesQuery,
+            },
+            user_query::FindUserByIdQuery,
+        },
         usecases::company_usecases::{
             CreateColaboratorUseCase, CreateCompanyRoleUseCase, CreateCompanyUseCase,
         },
@@ -129,7 +134,43 @@ pub async fn create_company_role_handler(
 }
 
 #[handler]
-pub async fn get_company_roles_handler(req: &mut Request, res: &mut Response, depot: &mut Depot) {}
+pub async fn get_company_roles_handler(
+    req: &mut Request,
+    res: &mut Response,
+    depot: &mut Depot,
+) -> AppResult<()> {
+    let state = depot.obtain::<Arc<State>>().unwrap();
+
+    let repository = SeaOrmCompanyRoleRepository::new(state.db.clone());
+    let company_repository = SeaOrmCompanyRepository::new(state.db.clone());
+
+    let company_id = req.params().get("company_id").unwrap().parse::<i32>()?;
+
+    FindCompanyByIdQuery::new(company_repository)
+        .execute(company_id)
+        .await
+        .map_err(|_| {
+            AppError::Bad(String::from(
+                "Compania invalida ou não encontrada na nossa base de dados",
+            ))
+        })?;
+
+    match GetCompanyRolesQuery::new(repository)
+        .execute(company_id)
+        .await
+    {
+        Ok(data) => {
+            res.status_code(StatusCode::OK);
+            res.render(DataResponse::success(CompanyRoleResource::collection(data)));
+        }
+        Err(err) => {
+            res.status_code(StatusCode::INTERNAL_SERVER_ERROR);
+            res.render(DataResponse::error(err.to_string()));
+        }
+    }
+
+    Ok(())
+}
 
 #[handler]
 pub async fn create_company_colaborator_handler(
@@ -206,5 +247,41 @@ pub async fn get_company_colaborators_handler(
     req: &mut Request,
     res: &mut Response,
     depot: &mut Depot,
-) {
+) -> AppResult<()> {
+    let state = depot.obtain::<Arc<State>>().unwrap();
+
+    let repository = SeaOrmColaboratorRepository::new(state.db.clone());
+    let company_repository = SeaOrmCompanyRepository::new(state.db.clone());
+
+    let company_id = req
+        .params()
+        .get("company_id")
+        .cloned()
+        .unwrap()
+        .parse::<i32>()?;
+
+    FindCompanyByIdQuery::new(company_repository)
+        .execute(company_id)
+        .await
+        .map_err(|_| {
+            AppError::Bad(String::from(
+                "Compania invalida ou não encontrada na nossa base de dados",
+            ))
+        })?;
+
+    match GetCompanyColaboratorsQuery::new(repository)
+        .execute(company_id)
+        .await
+    {
+        Ok(data) => {
+            res.status_code(StatusCode::OK);
+            res.render(DataResponse::success(ColaboratorResource::collection(data)));
+        }
+        Err(err) => {
+            res.status_code(StatusCode::INTERNAL_SERVER_ERROR);
+            res.render(DataResponse::error(err.to_string()));
+        }
+    }
+
+    Ok(())
 }

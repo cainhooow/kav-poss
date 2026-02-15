@@ -34,3 +34,9 @@ impl From<CompanyColaborator> for ColaboratorResource {
         }
     }
 }
+
+impl ColaboratorResource {
+    pub fn collection(items: Vec<CompanyColaborator>) -> Vec<Self> {
+        items.into_iter().map(ColaboratorResource::from).collect()
+    }
+}

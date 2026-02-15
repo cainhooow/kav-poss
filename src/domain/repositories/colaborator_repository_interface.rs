@@ -9,6 +9,6 @@ pub trait ColaboratorRepository: Send + Sync {
         &self,
         colaborator: &NewColaborator,
     ) -> Result<CompanyColaborator, RepositoryError>;
-    async fn all(&self) -> Result<Vec<CompanyColaborator>, RepositoryError>;
+    async fn all(&self, company_id: i32) -> Result<Vec<CompanyColaborator>, RepositoryError>;
     async fn find_by_id(&self, colaorator_id: i32) -> Result<CompanyColaborator, RepositoryError>;
 }

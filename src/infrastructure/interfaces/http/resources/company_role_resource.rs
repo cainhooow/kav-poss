@@ -34,3 +34,9 @@ impl From<CompanyRole> for CompanyRoleResource {
         }
     }
 }
+
+impl CompanyRoleResource {
+    pub fn collection(items: Vec<CompanyRole>) -> Vec<Self> {
+        items.into_iter().map(CompanyRoleResource::from).collect()
+    }
+}

@@ -1,6 +1,8 @@
 use std::sync::Arc;
 
-use sea_orm::{ActiveModelTrait, ActiveValue::Set, DatabaseConnection, EntityTrait};
+use sea_orm::{
+    ActiveModelTrait, ActiveValue::Set, ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter,
+};
 
 use crate::domain::{
     entities::company_role::{CompanyRole, NewCompanyRole},
@@ -36,8 +38,12 @@ impl CompanyRoleRepository for SeaOrmCompanyRoleRepository {
         }
     }
 
-    async fn all(&self) -> Result<Vec<CompanyRole>, RepositoryError> {
-        match company_role::Entity::find().all(&*self.conn).await {
+    async fn all(&self, company_id: i32) -> Result<Vec<CompanyRole>, RepositoryError> {
+        match company_role::Entity::find()
+            .filter(company_role::Column::Id.eq(company_id))
+            .all(&*self.conn)
+            .await
+        {
             Ok(data) => Ok(data.into_iter().map(CompanyRole::from).collect()),
             Err(err) => Err(RepositoryError::Generic(err.to_string())),
         }
