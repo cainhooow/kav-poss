@@ -15,6 +15,8 @@ pub struct Model {
     pub company: HasOne<super::company::Entity>,
     #[sea_orm(has_many, via = "company_role_pivot")]
     pub flags: HasMany<super::role::Entity>,
+    #[sea_orm(has_many, via = "colaborator_role_pivot")]
+    pub colaborators: HasMany<super::company_colaborator::Entity>,
 }
 
 impl ActiveModelBehavior for ActiveModel {}

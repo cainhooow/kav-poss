@@ -1,3 +1,4 @@
+#[derive(Debug, Clone)]
 pub struct CompanyRole {
     pub id: Option<i32>,
     pub name: String,

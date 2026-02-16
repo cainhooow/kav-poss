@@ -10,7 +10,8 @@ use crate::{
         exceptions::{AppError, AppResult},
         queries::{
             company_query::{
-                FindCompanyByIdQuery, GetCompanyColaboratorsQuery, GetCompanyRolesQuery,
+                FindCompanyByIdQuery, FindCompanyColaboratorByUserId, GetCompanyColaboratorsQuery,
+                GetCompanyRolesQuery,
             },
             user_query::FindUserByIdQuery,
         },
@@ -142,16 +143,29 @@ pub async fn get_company_roles_handler(
     let state = depot.obtain::<Arc<State>>().unwrap();
 
     let repository = SeaOrmCompanyRoleRepository::new(state.db.clone());
+    let colaborator_repository = SeaOrmColaboratorRepository::new(state.db.clone());
     let company_repository = SeaOrmCompanyRepository::new(state.db.clone());
 
     let company_id = req.params().get("company_id").unwrap().parse::<i32>()?;
+    let user_id = depot
+        .get::<i32>("user_id")
+        .map_err(|_| AppError::Unauthorized(String::from("Unauthorized")))?;
 
-    FindCompanyByIdQuery::new(company_repository)
+    let company = FindCompanyByIdQuery::new(company_repository)
         .execute(company_id)
         .await
         .map_err(|_| {
             AppError::Bad(String::from(
                 "Compania invalida ou não encontrada na nossa base de dados",
+            ))
+        })?;
+
+    let colaborator = FindCompanyColaboratorByUserId::new(colaborator_repository)
+        .execute(company_id, *user_id)
+        .await
+        .map_err(|_| {
+            AppError::Bad(String::from(
+                "Você não faz parte desta companhia para poder ver ou editar informações.",
             ))
         })?;
 

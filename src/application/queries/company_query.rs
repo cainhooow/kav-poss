@@ -57,6 +57,23 @@ impl<R: ColaboratorRepository> GetCompanyColaboratorsQuery<R> {
     }
 }
 
+pub struct FindCompanyColaboratorByUserId<R: ColaboratorRepository> {
+    repository: R,
+}
+
+impl<R: ColaboratorRepository> FindCompanyColaboratorByUserId<R> {
+    pub fn new(repo: R) -> Self {
+        Self {
+            repository: repo
+        }
+    }
+
+    pub async fn execute(&self, company_id: i32, user_id: i32) -> AppResult<CompanyColaborator> {
+        let colaborator = self.repository.find_by_user_id(company_id, user_id).await?;
+        Ok(colaborator)
+    }
+}
+
 pub struct GetCompanyRolesQuery<R: CompanyRoleRepository> {
     repository: R,
 }

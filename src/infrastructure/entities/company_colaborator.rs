@@ -14,6 +14,8 @@ pub struct Model {
     pub badge: String,
     #[sea_orm(belongs_to, from = "company_id", to = "id")]
     pub company: HasOne<super::company::Entity>,
+    #[sea_orm(has_many, via = "colaborator_role_pivot")]
+    pub roles: HasMany<super::company_role::Entity>,
 }
 
 impl ActiveModelBehavior for ActiveModel {}

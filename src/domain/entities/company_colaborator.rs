@@ -1,3 +1,5 @@
+use crate::domain::entities::company_role::CompanyRole;
+
 #[derive(Debug, Clone)]
 pub struct CompanyColaborator {
     pub id: Option<i32>,
@@ -5,6 +7,7 @@ pub struct CompanyColaborator {
     pub user_id: i32,
     pub document: String,
     pub badge: String,
+    pub roles: Vec<CompanyRole>
 }
 
 pub struct ColaboratorBuilder {

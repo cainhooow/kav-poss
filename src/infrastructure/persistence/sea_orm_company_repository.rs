@@ -4,11 +4,11 @@ use crate::{
         exceptions::RepositoryError,
         repositories::company_repository_interface::CompanyRepository,
     },
-    infrastructure::entities::company,
-    infrastructure::entities::company::{self as CompanyModel, Entity as CompanyEntity},
+    infrastructure::entities::{company, company_colaborator},
 };
 use sea_orm::{
-    ActiveModelTrait, ActiveValue::Set, ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter,
+    ActiveModelTrait, ActiveValue::Set, ColumnTrait, DatabaseConnection, EntityTrait, ModelTrait,
+    QueryFilter,
 };
 use std::sync::Arc;
 
@@ -25,7 +25,7 @@ impl SeaOrmCompanyRepository {
 #[async_trait::async_trait]
 impl CompanyRepository for SeaOrmCompanyRepository {
     async fn save(&self, company: &NewCompany) -> Result<Company, RepositoryError> {
-        let model = CompanyModel::ActiveModel {
+        let model = company::ActiveModel {
             name: Set(company.name.clone()),
             user_id: Set(company.user_id.clone()),
             ..Default::default()
@@ -38,10 +38,15 @@ impl CompanyRepository for SeaOrmCompanyRepository {
     }
 
     async fn find_by_id(&self, id: i32) -> Result<Company, RepositoryError> {
-        match CompanyEntity::find_by_id(id).one(&*self.conn).await {
+        match company::Entity::find_by_id(id).one(&*self.conn).await {
             Ok(data) => {
                 if let Some(company) = data {
-                    Ok(Company::from(company))
+                    let colaborators = company
+                        .find_related(company_colaborator::Entity)
+                        .all(&*self.conn)
+                        .await?;
+
+                    Ok(Company::from((company, colaborators)))
                 } else {
                     Err(RepositoryError::NotFound)
                 }
@@ -51,7 +56,7 @@ impl CompanyRepository for SeaOrmCompanyRepository {
     }
 
     async fn find_by_user_id(&self, user_id: i32) -> Result<Company, RepositoryError> {
-        match CompanyEntity::find()
+        match company::Entity::find()
             .filter(company::Column::UserId.eq(user_id))
             .one(&*self.conn)
             .await

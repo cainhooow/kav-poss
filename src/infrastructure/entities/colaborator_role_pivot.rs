@@ -11,9 +11,9 @@ pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
     pub role_id: i32,
     #[sea_orm(belongs_to, from = "role_id", to = "id")]
-    pub role: Option<super::role::Entity>,
+    pub role: Option<super::company_role::Entity>,
     #[sea_orm(belongs_to, from = "colaborator_id", to = "id")]
-    pub user: Option<super::user::Entity>,
+    pub user: Option<super::company_colaborator::Entity>,
 }
 
 impl ActiveModelBehavior for ActiveModel {}

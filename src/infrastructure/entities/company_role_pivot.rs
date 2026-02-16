@@ -16,36 +16,4 @@ pub struct Model {
     pub flag: Option<super::role::Entity>,
 }
 
-// #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
-// pub enum Relation {
-//     #[sea_orm(
-//         belongs_to = "super::company_role::Entity",
-//         from = "Column::CompanyRoleId",
-//         to = "super::company_role::Column::Id",
-//         on_update = "NoAction",
-//         on_delete = "Cascade"
-//     )]
-//     CompanyRole,
-//     #[sea_orm(
-//         belongs_to = "super::role::Entity",
-//         from = "Column::FlagId",
-//         to = "super::role::Column::Id",
-//         on_update = "NoAction",
-//         on_delete = "Cascade"
-//     )]
-//     Role,
-// }
-
-// impl Related<super::company_role::Entity> for Entity {
-//     fn to() -> RelationDef {
-//         Relation::CompanyRole.def()
-//     }
-// }
-
-// impl Related<super::role::Entity> for Entity {
-//     fn to() -> RelationDef {
-//         Relation::Role.def()
-//     }
-// }
-
 impl ActiveModelBehavior for ActiveModel {}

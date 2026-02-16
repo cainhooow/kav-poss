@@ -1,8 +1,11 @@
+use crate::domain::entities::company_colaborator::CompanyColaborator;
+
 #[derive(Debug, Clone)]
 pub struct Company {
     pub id: Option<i32>,
     pub name: String,
     pub user_id: i32,
+    pub colaborators: Vec<CompanyColaborator>
 }
 
 pub struct CompanyBuilder {
