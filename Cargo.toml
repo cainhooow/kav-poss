@@ -13,7 +13,7 @@ core-server = { path = "core-server" }
 async-trait = "0.1.89"
 regex = "1.12.3"
 salvo = { version = "0.89.1", features = ["affix-state", "flash", "jwt-auth", "logging"] }
-sea-orm = { version = "1.1.19", features = ["macros", "sqlx-postgres"] }
+sea-orm = { version = "2.0.0-rc", features = ["macros", "sqlx-postgres"] }
 tokio = { version = "1.49.0", features = ["macros"] }
 tracing = "0.1.44"
 tracing-subscriber = "0.3.22"

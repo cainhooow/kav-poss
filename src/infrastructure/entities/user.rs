@@ -2,6 +2,7 @@
 
 use sea_orm::entity::prelude::*;
 
+#[sea_orm::model]
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq)]
 #[sea_orm(table_name = "user")]
 pub struct Model {
@@ -11,30 +12,8 @@ pub struct Model {
     #[sea_orm(unique)]
     pub email: String,
     pub password: String,
-}
-
-#[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
-pub enum Relation {
-    #[sea_orm(has_one = "super::company::Entity")]
-    Company,
-    #[sea_orm(has_many = "super::user_roles_pivot::Entity")]
-    UserRolesPivot,
-}
-
-impl Related<super::company::Entity> for Entity {
-    fn to() -> RelationDef {
-        Relation::Company.def()
-    }
-}
-
-impl Related<super::role::Entity> for Entity {
-    fn to() -> RelationDef {
-        super::user_roles_pivot::Relation::Role.def()
-    }
-
-    fn via() -> Option<RelationDef> {
-        Some(super::user_roles_pivot::Relation::User.def().rev())
-    }
+    #[sea_orm(has_many, via = "user_roles_pivot")]
+    pub flags: HasMany<super::role::Entity>
 }
 
 impl ActiveModelBehavior for ActiveModel {}

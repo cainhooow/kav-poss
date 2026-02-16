@@ -2,6 +2,7 @@
 
 use sea_orm::entity::prelude::*;
 
+#[sea_orm::model]
 #[derive(Clone, Debug, PartialEq, Eq, DeriveEntityModel)]
 #[sea_orm(table_name = "company_colaborator")]
 pub struct Model {
@@ -11,56 +12,11 @@ pub struct Model {
     pub user_id: i32,
     pub document: String,
     pub badge: String,
+    #[sea_orm(belongs_to, from = "company_id", to = "id")]
+    pub company: HasOne<super::company::Entity>,
 }
 
-#[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
-pub enum Relation {
-    #[sea_orm(has_one = "super::colaborator_role_pivot::Entity")]
-    ColaboratorRolePivot,
-    #[sea_orm(
-        belongs_to = "super::company::Entity",
-        from = "Column::CompanyId",
-        to = "super::company::Column::Id",
-        on_update = "NoAction",
-        on_delete = "Cascade"
-    )]
-    Company,
-    #[sea_orm(
-        belongs_to = "super::user::Entity",
-        from = "Column::UserId",
-        to = "super::user::Column::Id",
-        on_update = "NoAction",
-        on_delete = "Cascade"
-    )]
-    User,
-}
 
-impl Related<super::company_role::Entity> for Entity {
-    fn to() -> RelationDef {
-        super::colaborator_role_pivot::Relation::CompanyRole
-            .def()
-            .rev()
-    }
 
-    fn via() -> Option<RelationDef> {
-        Some(
-            super::colaborator_role_pivot::Relation::CompanyColaborator
-                .def()
-                .rev(),
-        )
-    }
-}
-
-impl Related<super::company::Entity> for Entity {
-    fn to() -> RelationDef {
-        Relation::Company.def()
-    }
-}
-
-impl Related<super::user::Entity> for Entity {
-    fn to() -> RelationDef {
-        Relation::User.def()
-    }
-}
 
 impl ActiveModelBehavior for ActiveModel {}

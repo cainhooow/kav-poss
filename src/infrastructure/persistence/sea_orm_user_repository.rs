@@ -63,13 +63,14 @@ impl UserRepository for SeaOrmUserRepository {
 
         match user.first() {
             Some(data) => {
-                let (user, roles) = data;
-                let roles: Vec<RoleEnum> = roles
+                let (user, flags) = data;
+
+                let flags: Vec<RoleEnum> = flags
                     .into_iter()
                     .map(|r| RoleEnum::from_str(&r.name).unwrap())
                     .collect();
 
-                Ok(UserMapper::with_roles(User::from(user), roles))
+                Ok(UserMapper::with_roles(User::from(user), flags))
             }
             None => Err(RepositoryError::NotFound),
         }
