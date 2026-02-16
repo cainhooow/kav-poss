@@ -2,44 +2,19 @@
 
 use sea_orm::entity::prelude::*;
 
+#[sea_orm::model]
 #[derive(Clone, Debug, PartialEq, Eq, DeriveEntityModel)]
 #[sea_orm(table_name = "plan_feature_pivot")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
     pub plan_id: i32,
+    #[sea_orm(primary_key, auto_increment = false)]
     pub feature_id: i32,
-}
 
-#[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
-pub enum Relation {
-    #[sea_orm(
-        belongs_to = "super::plan::Entity",
-        from = "Column::PlanId",
-        to = "super::plan::Column::Id",
-        on_update = "NoAction",
-        on_delete = "Cascade"
-    )]
-    Plan,
-    #[sea_orm(
-        belongs_to = "super::role::Entity",
-        from = "Column::FeatureId",
-        to = "super::role::Column::Id",
-        on_update = "NoAction",
-        on_delete = "Cascade"
-    )]
-    Role,
-}
-
-impl Related<super::plan::Entity> for Entity {
-    fn to() -> RelationDef {
-        Relation::Plan.def()
-    }
-}
-
-impl Related<super::role::Entity> for Entity {
-    fn to() -> RelationDef {
-        Relation::Role.def()
-    }
+    #[sea_orm(belongs_to, from = "plan_id", to = "id")]
+    pub plan: Option<super::plan::Entity>,
+    #[sea_orm(belongs_to, from = "feature_id", to = "id")]
+    pub feature: Option<super::role::Entity>
 }
 
 impl ActiveModelBehavior for ActiveModel {}

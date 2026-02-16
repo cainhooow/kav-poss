@@ -15,30 +15,4 @@ pub struct Model {
     pub users: HasMany<super::user::Entity>
 }
 
-// #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
-// pub enum Relation {
-//     #[sea_orm(has_many = "super::user_roles_pivot::Entity")]
-//     UserRolesPivot,
-// }
-
-// impl Related<super::user::Entity> for Entity {
-//     fn to() -> RelationDef {
-//         super::user_roles_pivot::Relation::User.def()
-//     }
-
-//     fn via() -> Option<RelationDef> {
-//         Some(super::user_roles_pivot::Relation::User.def().rev())
-//     }
-// }
-
-// impl Related<super::plan::Entity> for Entity {
-//     fn to() -> RelationDef {
-//         super::plan_feature_pivot::Relation::Plan.def()
-//     }
-
-//     fn via() -> Option<RelationDef> {
-//         Some(super::plan_feature_pivot::Relation::Plan.def().rev())
-//     }
-// }
-
 impl ActiveModelBehavior for ActiveModel {}

@@ -2,6 +2,7 @@
 
 use sea_orm::entity::prelude::*;
 
+#[sea_orm::model]
 #[derive(Clone, Debug, PartialEq, Eq, DeriveEntityModel)]
 #[sea_orm(table_name = "plan")]
 pub struct Model {
@@ -11,22 +12,8 @@ pub struct Model {
     pub price: i32,
     #[sea_orm(column_type = "Text", nullable)]
     pub description: Option<String>,
-}
-
-#[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
-pub enum Relation {
-    #[sea_orm(has_one = "super::plan_feature_pivot::Entity")]
-    PlanFeaturePivot,
-}
-
-impl Related<super::role::Entity> for Entity {
-    fn to() -> RelationDef {
-        super::plan_feature_pivot::Relation::Role.def()
-    }
-
-    fn via() -> Option<RelationDef> {
-        Some(super::plan_feature_pivot::Relation::Plan.def().rev())
-    }
+    #[sea_orm(has_many, via = "plan_feature_pivot")]
+    pub features: HasMany<super::role::Entity>,
 }
 
 impl ActiveModelBehavior for ActiveModel {}

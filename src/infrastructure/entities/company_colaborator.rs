@@ -16,7 +16,4 @@ pub struct Model {
     pub company: HasOne<super::company::Entity>,
 }
 
-
-
-
 impl ActiveModelBehavior for ActiveModel {}

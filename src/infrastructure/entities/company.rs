@@ -12,6 +12,8 @@ pub struct Model {
     pub user_id: i32,
     #[sea_orm(has_many)]
     pub colaborators: HasMany<super::company_colaborator::Entity>,
+    #[sea_orm(has_many)]
+    pub roles: HasMany<super::company_role::Entity>
 }
 
 impl ActiveModelBehavior for ActiveModel {}

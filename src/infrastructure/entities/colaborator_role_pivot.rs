@@ -2,44 +2,18 @@
 
 use sea_orm::entity::prelude::*;
 
+#[sea_orm::model]
 #[derive(Clone, Debug, PartialEq, Eq, DeriveEntityModel)]
 #[sea_orm(table_name = "colaborator_role_pivot")]
 pub struct Model {
-    #[sea_orm(primary_key)]
+    #[sea_orm(primary_key, auto_increment = false)]
     pub colaborator_id: i32,
+    #[sea_orm(primary_key, auto_increment = false)]
     pub role_id: i32,
-}
-
-#[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
-pub enum Relation {
-    #[sea_orm(
-        belongs_to = "super::company_colaborator::Entity",
-        from = "Column::ColaboratorId",
-        to = "super::company_colaborator::Column::Id",
-        on_update = "NoAction",
-        on_delete = "Cascade"
-    )]
-    CompanyColaborator,
-    #[sea_orm(
-        belongs_to = "super::company_role::Entity",
-        from = "Column::RoleId",
-        to = "super::company_role::Column::Id",
-        on_update = "NoAction",
-        on_delete = "Cascade"
-    )]
-    CompanyRole,
-}
-
-impl Related<super::company_colaborator::Entity> for Entity {
-    fn to() -> RelationDef {
-        Relation::CompanyColaborator.def()
-    }
-}
-
-impl Related<super::company_role::Entity> for Entity {
-    fn to() -> RelationDef {
-        Relation::CompanyRole.def()
-    }
+    #[sea_orm(belongs_to, from = "role_id", to = "id")]
+    pub role: Option<super::role::Entity>,
+    #[sea_orm(belongs_to, from = "colaborator_id", to = "id")]
+    pub user: Option<super::user::Entity>,
 }
 
 impl ActiveModelBehavior for ActiveModel {}

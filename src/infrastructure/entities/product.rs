@@ -2,6 +2,7 @@
 
 use sea_orm::entity::prelude::*;
 
+#[sea_orm::model]
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq)]
 #[sea_orm(table_name = "product")]
 pub struct Model {
@@ -13,8 +14,5 @@ pub struct Model {
     #[sea_orm(unique)]
     pub sku: String,
 }
-
-#[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
-pub enum Relation {}
 
 impl ActiveModelBehavior for ActiveModel {}

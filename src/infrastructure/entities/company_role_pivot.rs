@@ -2,44 +2,50 @@
 
 use sea_orm::entity::prelude::*;
 
+#[sea_orm::model]
 #[derive(Clone, Debug, PartialEq, Eq, DeriveEntityModel)]
 #[sea_orm(table_name = "company_role_pivot")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
     pub company_role_id: i32,
+    #[sea_orm(primary_key, auto_increment = false)]
     pub flag_id: i32,
+    #[sea_orm(belongs_to, from = "company_role_id", to = "id")]
+    pub role: Option<super::company_role::Entity>,
+    #[sea_orm(belongs_to, from = "flag_id", to = "id")]
+    pub flag: Option<super::role::Entity>,
 }
 
-#[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
-pub enum Relation {
-    #[sea_orm(
-        belongs_to = "super::company_role::Entity",
-        from = "Column::CompanyRoleId",
-        to = "super::company_role::Column::Id",
-        on_update = "NoAction",
-        on_delete = "Cascade"
-    )]
-    CompanyRole,
-    #[sea_orm(
-        belongs_to = "super::role::Entity",
-        from = "Column::FlagId",
-        to = "super::role::Column::Id",
-        on_update = "NoAction",
-        on_delete = "Cascade"
-    )]
-    Role,
-}
+// #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
+// pub enum Relation {
+//     #[sea_orm(
+//         belongs_to = "super::company_role::Entity",
+//         from = "Column::CompanyRoleId",
+//         to = "super::company_role::Column::Id",
+//         on_update = "NoAction",
+//         on_delete = "Cascade"
+//     )]
+//     CompanyRole,
+//     #[sea_orm(
+//         belongs_to = "super::role::Entity",
+//         from = "Column::FlagId",
+//         to = "super::role::Column::Id",
+//         on_update = "NoAction",
+//         on_delete = "Cascade"
+//     )]
+//     Role,
+// }
 
-impl Related<super::company_role::Entity> for Entity {
-    fn to() -> RelationDef {
-        Relation::CompanyRole.def()
-    }
-}
+// impl Related<super::company_role::Entity> for Entity {
+//     fn to() -> RelationDef {
+//         Relation::CompanyRole.def()
+//     }
+// }
 
-impl Related<super::role::Entity> for Entity {
-    fn to() -> RelationDef {
-        Relation::Role.def()
-    }
-}
+// impl Related<super::role::Entity> for Entity {
+//     fn to() -> RelationDef {
+//         Relation::Role.def()
+//     }
+// }
 
 impl ActiveModelBehavior for ActiveModel {}
