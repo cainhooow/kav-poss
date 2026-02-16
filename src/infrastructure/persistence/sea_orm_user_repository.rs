@@ -84,7 +84,15 @@ impl UserRepository for SeaOrmUserRepository {
         {
             Ok(data) => {
                 if let Some(user) = data {
-                    Ok(User::from(user))
+                    let flags: Vec<RoleEnum> = user
+                        .find_related(role::Entity)
+                        .all(&*self.conn)
+                        .await?
+                        .into_iter()
+                        .map(|r| RoleEnum::from_str(&r.name).unwrap())
+                        .collect();
+
+                    Ok(UserMapper::with_roles(User::from(user), flags))
                 } else {
                     Err(RepositoryError::NotFound)
                 }
