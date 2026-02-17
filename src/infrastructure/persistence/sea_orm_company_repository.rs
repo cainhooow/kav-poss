@@ -46,6 +46,7 @@ impl CompanyRepository for SeaOrmCompanyRepository {
         {
             Ok(data) => {
                 if let Some(company) = data {
+                    println!("COMPANY DEBUG DISPLAY {:?}", company);
                     Ok(Company::from(company))
                 } else {
                     Err(RepositoryError::NotFound)
