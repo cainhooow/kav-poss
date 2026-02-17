@@ -40,8 +40,7 @@ impl CompanyRepository for SeaOrmCompanyRepository {
     async fn find_by_id(&self, id: i32) -> Result<Company, RepositoryError> {
         match company::Entity::load()
             .filter_by_id(id)
-            .with(company_colaborator::Entity)
-            .with((company_role::Entity, role::Entity))
+            .with((company_colaborator::Entity, company_role::Entity))
             .one(&*self.conn)
             .await
         {
