@@ -1,4 +1,4 @@
-use std::sync::Arc;
+use std::{str::FromStr, sync::Arc};
 
 use core_server::RoleEnum;
 use garde::Validate;
@@ -175,13 +175,24 @@ pub async fn get_company_roles_handler(
         }
     };
 
-    if !is_owner || !is_colaborator {
+    if !is_owner && !is_colaborator {
         return Err(AppError::Unauthorized(String::from(
             "Você não tem permissão para visualizar/modificar este recurso.",
         )));
     }
 
     let colaborator = colaborator.unwrap();
+    let has_permission = colaborator.roles.iter().any(|role| {
+        role.flags
+            .iter()
+            .any(|f| RoleEnum::from_str(&f.name).map_or(false, |r| r == RoleEnum::CanCreateCompany))
+    });
+
+    if !is_owner && !has_permission {
+        return Err(AppError::Unauthorized(String::from(
+            "Seu cargo não tem permissão para gerenciar este recurso.",
+        )));
+    }
 
     match GetCompanyRolesQuery::new(repository)
         .execute(company_id)
