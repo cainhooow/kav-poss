@@ -2,6 +2,7 @@ use crate::{
     domain::entities::company_colaborator::CompanyColaborator,
     domain::entities::company_role::CompanyRole,
     infrastructure::entities::company_colaborator::Model as CompanyColaboratorModel,
+    infrastructure::entities::company_colaborator::ModelEx as CompanyColaboratorModelEx,
     infrastructure::entities::company_role::Model as CompanyRoleModel,
 };
 
@@ -14,6 +15,19 @@ impl From<CompanyColaboratorModel> for CompanyColaborator {
             document: value.document,
             badge: value.badge,
             roles: vec![],
+        }
+    }
+}
+
+impl From<CompanyColaboratorModelEx> for CompanyColaborator {
+    fn from(value: CompanyColaboratorModelEx) -> Self {
+        Self {
+            id: Some(value.id),
+            company_id: value.company_id,
+            user_id: value.user_id,
+            document: value.document,
+            badge: value.badge,
+            roles: value.roles.into_iter().map(CompanyRole::from).collect(),
         }
     }
 }

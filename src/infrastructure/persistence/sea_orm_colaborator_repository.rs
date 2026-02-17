@@ -5,13 +5,16 @@ use sea_orm::{
     QueryFilter,
 };
 
-use crate::domain::{
-    entities::{
-        company_colaborator::{CompanyColaborator, NewColaborator},
-        user,
+use crate::{
+    domain::{
+        entities::{
+            company_colaborator::{CompanyColaborator, NewColaborator},
+            user,
+        },
+        exceptions::RepositoryError,
+        repositories::colaborator_repository_interface::ColaboratorRepository,
     },
-    exceptions::RepositoryError,
-    repositories::colaborator_repository_interface::ColaboratorRepository,
+    infrastructure::entities::{company, role},
 };
 
 use crate::infrastructure::entities::company_colaborator;
@@ -79,7 +82,10 @@ impl ColaboratorRepository for SeaOrmColaboratorRepository {
         company_id: i32,
         user_id: i32,
     ) -> Result<CompanyColaborator, RepositoryError> {
-        match company_colaborator::Entity::find()
+        match company_colaborator::Entity::load()
+            .with(company_role::Entity)
+            .with(company::Entity)
+            .with((company_role::Entity, role::Entity))
             .filter(company_colaborator::Column::CompanyId.eq(company_id))
             .filter(company_colaborator::Column::UserId.eq(user_id))
             .one(&*self.conn)
@@ -87,12 +93,7 @@ impl ColaboratorRepository for SeaOrmColaboratorRepository {
         {
             Ok(data) => {
                 if let Some(colaborator) = data {
-                    let roles = colaborator
-                        .find_related(company_role::Entity)
-                        .all(&*self.conn)
-                        .await?;
-
-                    Ok(CompanyColaborator::from((colaborator, roles)))
+                    Ok(CompanyColaborator::from(colaborator))
                 } else {
                     Err(RepositoryError::NotFound)
                 }

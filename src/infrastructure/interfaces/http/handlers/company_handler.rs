@@ -226,7 +226,7 @@ pub async fn create_company_colaborator_handler(
                 .await
                 .map_err(|_| {
                     AppError::Bad(String::from(
-                        "Compania invalida ou não encontrada na nossa base de dados",
+                        "Companhia invalida ou não encontrada na nossa base de dados",
                     ))
                 })?;
 
