@@ -1,9 +1,14 @@
+use core_server::RoleEnum;
+
+use crate::domain::entities::role::Role;
+
 #[derive(Debug, Clone)]
 pub struct CompanyRole {
     pub id: Option<i32>,
     pub name: String,
     pub description: Option<String>,
     pub company_id: i32,
+    pub flags: Vec<Role>,
 }
 
 pub struct CompanyRoleBuilder {

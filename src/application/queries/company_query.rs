@@ -63,9 +63,7 @@ pub struct FindCompanyColaboratorByUserId<R: ColaboratorRepository> {
 
 impl<R: ColaboratorRepository> FindCompanyColaboratorByUserId<R> {
     pub fn new(repo: R) -> Self {
-        Self {
-            repository: repo
-        }
+        Self { repository: repo }
     }
 
     pub async fn execute(&self, company_id: i32, user_id: i32) -> AppResult<CompanyColaborator> {

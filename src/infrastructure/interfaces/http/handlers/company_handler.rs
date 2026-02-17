@@ -156,18 +156,32 @@ pub async fn get_company_roles_handler(
         .await
         .map_err(|_| {
             AppError::Bad(String::from(
-                "Compania invalida ou não encontrada na nossa base de dados",
+                "Empresa invalida ou não encontrada na nossa base de dados",
             ))
         })?;
 
     let colaborator = FindCompanyColaboratorByUserId::new(colaborator_repository)
         .execute(company_id, *user_id)
-        .await
-        .map_err(|_| {
-            AppError::Bad(String::from(
-                "Você não faz parte desta companhia para poder ver ou editar informações.",
-            ))
-        })?;
+        .await;
+
+    let is_owner = company.user_id == *user_id;
+    let is_colaborator = match colaborator {
+        Ok(_) => true,
+        Err(err) => {
+            return Err(AppError::Bad(String::from(format!(
+                "Erro ao verificar colaborador: {}",
+                err.to_string()
+            ))));
+        }
+    };
+
+    if !is_owner || !is_colaborator {
+        return Err(AppError::Unauthorized(String::from(
+            "Você não tem permissão para visualizar/modificar este recurso.",
+        )));
+    }
+
+    let colaborator = colaborator.unwrap();
 
     match GetCompanyRolesQuery::new(repository)
         .execute(company_id)
