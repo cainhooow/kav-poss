@@ -1,7 +1,8 @@
 use crate::{
     domain::entities::{company::Company, company_colaborator::CompanyColaborator},
     infrastructure::entities::{
-        company::Model as CompanyModel, company_colaborator::Model as ColaboratorModel,
+        company::Model as CompanyModel, company::ModelEx as CompanyModelEx,
+        company_colaborator::Model as ColaboratorModel,
     },
 };
 
@@ -12,6 +13,21 @@ impl From<CompanyModel> for Company {
             name: value.name,
             user_id: value.user_id,
             colaborators: vec![],
+        }
+    }
+}
+
+impl From<CompanyModelEx> for Company {
+    fn from(value: CompanyModelEx) -> Self {
+        Self {
+            id: Some(value.id),
+            name: value.name,
+            user_id: value.user_id,
+            colaborators: value
+                .colaborators
+                .into_iter()
+                .map(CompanyColaborator::from)
+                .collect(),
         }
     }
 }

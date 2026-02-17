@@ -4,11 +4,11 @@ use crate::{
         exceptions::RepositoryError,
         repositories::company_repository_interface::CompanyRepository,
     },
-    infrastructure::entities::{company, company_colaborator},
+    infrastructure::entities::{company, company_colaborator, company_role, role},
 };
 use sea_orm::{
-    ActiveModelTrait, ActiveValue::Set, ColumnTrait, DatabaseConnection, EntityTrait, ModelTrait,
-    QueryFilter,
+    ActiveModelTrait, ActiveValue::Set, ColumnTrait, DatabaseConnection, EntityLoaderTrait,
+    EntityTrait, ModelTrait, QueryFilter,
 };
 use std::sync::Arc;
 
@@ -38,15 +38,16 @@ impl CompanyRepository for SeaOrmCompanyRepository {
     }
 
     async fn find_by_id(&self, id: i32) -> Result<Company, RepositoryError> {
-        match company::Entity::find_by_id(id).one(&*self.conn).await {
+        match company::Entity::load()
+            .filter_by_id(id)
+            .with(company_colaborator::Entity)
+            .with((company_role::Entity, role::Entity))
+            .one(&*self.conn)
+            .await
+        {
             Ok(data) => {
                 if let Some(company) = data {
-                    let colaborators = company
-                        .find_related(company_colaborator::Entity)
-                        .all(&*self.conn)
-                        .await?;
-
-                    Ok(Company::from((company, colaborators)))
+                    Ok(Company::from(company))
                 } else {
                     Err(RepositoryError::NotFound)
                 }
