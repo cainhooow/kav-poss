@@ -56,13 +56,13 @@ pub async fn create_company_handler(
                 .execute(*user_id)
                 .await?;
 
-            // if !user.roles.contains(&RoleEnum::CanCreateCompany) {
-            //     res.status_code(StatusCode::FORBIDDEN);
-            //     res.render(DataResponse::error(
-            //         "Você não tem permissão para este recurso.",
-            //     ));
-            //     return Ok(());
-            // }
+            if !user.roles.contains(&RoleEnum::CanCreateCompany) {
+                res.status_code(StatusCode::FORBIDDEN);
+                res.render(DataResponse::error(
+                    "Você não tem permissão para este recurso.",
+                ));
+                return Ok(());
+            }
 
             data.validate()
                 .map_err(|err| AppError::Bad(err.to_string()))?;

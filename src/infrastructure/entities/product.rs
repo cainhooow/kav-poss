@@ -10,9 +10,11 @@ pub struct Model {
     pub id: i32,
     pub name: String,
     pub description: Option<String>,
+    pub barcode: Option<String>,
     pub price: i32,
     #[sea_orm(unique)]
     pub sku: String,
+    pub company_id: i32,
 }
 
 impl ActiveModelBehavior for ActiveModel {}

@@ -3,29 +3,56 @@ use std::sync::Arc;
 
 use crate::{
     application::{
-        exceptions::AppResult,
-        queries::product_query::{FindAllProductsQuery, FindProductByIdQuery},
+        exceptions::{AppError, AppResult},
+        queries::{
+            company_query::FindCompanyByIdQuery,
+            product_query::{FindAllProductsQuery, FindProductByIdQuery},
+        },
         usecases::product_usecases::CreateProductUseCase,
     },
     infrastructure::{
         http::State,
         interfaces::http::resources::{DataResponse, product_resource::ProductResource},
-        persistence::sea_orm_product_repository::SeaOrmProductRepository,
+        persistence::{
+            sea_orm_company_repository::SeaOrmCompanyRepository,
+            sea_orm_product_repository::SeaOrmProductRepository,
+        },
     },
 };
 
 #[handler]
-pub async fn create_product_handler(depot: &mut Depot, req: &mut Request, res: &mut Response)
-/* -> AppResult<Json<DataResponse<ProductResource>>> */
-{
+pub async fn create_product_handler(
+    depot: &mut Depot,
+    req: &mut Request,
+    res: &mut Response,
+) -> AppResult<()> {
     let state = depot.obtain::<Arc<State>>().unwrap();
+
+    let company_id = req.params().get("company_id").unwrap().parse::<i32>()?;
+    let company_repository = SeaOrmCompanyRepository::new(state.db.clone());
+
+    let company = FindCompanyByIdQuery::new(company_repository)
+        .execute(company_id)
+        .await
+        .map_err(|_| {
+            AppError::Forbidden(String::from(
+                "Não foi possivel encontrar esta empresa/recurso",
+            ))
+        })?;
 
     match req.parse_json::<ProductResource>().await {
         Ok(data) => {
             let repository = SeaOrmProductRepository::new(state.db.clone());
 
             match CreateProductUseCase::new(repository)
-                .execute(data.name, data.price, data.sku, data.description)
+                .execute(
+                    data.name,
+                    data.price,
+                    data.sku,
+                    data.description,
+                    data.barcode,
+                    company.id.unwrap(),
+                )
                 .await
             {
                 Ok(data) => {
@@ -43,6 +70,8 @@ pub async fn create_product_handler(depot: &mut Depot, req: &mut Request, res: &
             res.render(DataResponse::error(err.to_string()))
         }
     }
+
+    Ok(())
 }
 
 #[handler]

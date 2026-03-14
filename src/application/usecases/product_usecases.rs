@@ -21,9 +21,12 @@ impl<R: ProductRepository> CreateProductUseCase<R> {
         price: i32,
         sku: String,
         description: Option<String>,
+        barcode: Option<String>,
+        company_id: i32,
     ) -> AppResult<Product> {
-        let product = ProductBuilder::new(name, price, sku)
+        let product = ProductBuilder::new(name, price, sku, company_id)
             .description(description)
+            .barcode(barcode)
             .build();
 
         println!("product: {:?}", product);

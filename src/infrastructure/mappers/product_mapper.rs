@@ -11,7 +11,9 @@ impl From<ProductModel> for Product {
             name: value.name,
             description: value.description,
             price: value.price,
+            barcode: value.barcode,
             sku: value.sku,
+            company_id: value.company_id,
         }
     }
 }

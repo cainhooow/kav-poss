@@ -5,6 +5,8 @@ pub struct Product {
     pub description: Option<String>,
     pub price: i32,
     pub sku: String,
+    pub barcode: Option<String>,
+    pub company_id: i32,
 }
 
 pub struct ProductBuilder {
@@ -12,6 +14,8 @@ pub struct ProductBuilder {
     description: Option<String>,
     price: i32,
     sku: String,
+    barcode: Option<String>,
+    company_id: i32,
 }
 
 #[derive(Clone, Debug)]
@@ -23,12 +27,19 @@ pub struct NewProduct {
 }
 
 impl ProductBuilder {
-    pub fn new(name: impl Into<String>, price: i32, sku: impl Into<String>) -> Self {
+    pub fn new(
+        name: impl Into<String>,
+        price: i32,
+        sku: impl Into<String>,
+        company_id: i32,
+    ) -> Self {
         Self {
             name: name.into(),
             description: None,
             sku: sku.into(),
             price,
+            barcode: None,
+            company_id,
         }
     }
 
@@ -49,6 +60,16 @@ impl ProductBuilder {
 
     pub fn sku(mut self, sku: impl Into<String>) -> Self {
         self.sku = sku.into();
+        self
+    }
+
+    pub fn barcode(mut self, barcode: Option<String>) -> Self {
+        self.barcode = barcode;
+        self
+    }
+
+    pub fn company(mut self, company_id: i32) -> Self {
+        self.company_id = company_id;
         self
     }
 

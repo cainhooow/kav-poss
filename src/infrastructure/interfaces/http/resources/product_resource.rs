@@ -9,6 +9,7 @@ pub struct ProductResource {
     pub description: Option<String>,
     pub price: i32,
     pub sku: String,
+    pub barcode: Option<String>,
 }
 
 impl From<&Product> for ProductResource {
@@ -19,6 +20,7 @@ impl From<&Product> for ProductResource {
             description: value.description.clone(),
             price: value.price,
             sku: value.sku.clone(),
+            barcode: value.barcode.clone(),
         }
     }
 }
@@ -31,6 +33,7 @@ impl From<Product> for ProductResource {
             description: value.description,
             price: value.price,
             sku: value.sku,
+            barcode: value.barcode,
         }
     }
 }
